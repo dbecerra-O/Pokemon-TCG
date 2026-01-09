@@ -1,0 +1,6 @@
+@Tcg_web_HostAddress = http://localhost:5180
+
+GET {{Tcg_web_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
