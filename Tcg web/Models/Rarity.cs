@@ -1,5 +1,9 @@
-﻿namespace Tcg_web.Models
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Tcg_web.Models
 {
+    [Index(nameof(Name), IsUnique = true)]
     public class Rarity
     {
         public int Id { get; set; }

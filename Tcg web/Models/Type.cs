@@ -1,5 +1,8 @@
-﻿namespace Tcg_web.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Tcg_web.Models
 {
+    [Index(nameof(Name), IsUnique = true)]
     public class Type
     {
         public int Id { get; set; }

@@ -6,7 +6,7 @@
         public string Name { get; set; }
         public string ImageUrl { get; set; }
         public int TypeId { get; set; }
-        public int PackageId { get; set; }
+        public int RarityId { get; set; }
         public Type Type { get; set; }
         public Rarity Rarity { get; set; }
 

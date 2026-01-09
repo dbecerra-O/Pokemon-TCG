@@ -22,6 +22,17 @@ namespace Tcg_web.Data
                 .HasOne(c => c.Card)
                 .WithMany(pc => pc.Collections)
                 .HasForeignKey(c => c.CardId);
+
+            modelBuilder.Entity<Content>()
+                .HasKey(pc => new { pc.PackageId, pc.CardId });
+            modelBuilder.Entity<Content>()
+                .HasOne(p => p.Package)
+                .WithMany(pc => pc.Contents)
+                .HasForeignKey(p => p.PackageId);
+            modelBuilder.Entity<Content>()
+                .HasOne(c => c.Card)
+                .WithMany(pc => pc.Contents)
+                .HasForeignKey(c => c.CardId);
         }
     }
 }
