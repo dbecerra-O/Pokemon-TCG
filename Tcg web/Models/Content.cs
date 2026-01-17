@@ -2,9 +2,9 @@
 {
     public class Content
     {
-        public int PackageId { get; set; }
+        public int SetId { get; set; }
         public int CardId { get; set; }
-        public Package Package { get; set; }
+        public Set Set { get; set; }
         public Card Card { get; set; }
     }
 }

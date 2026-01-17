@@ -6,29 +6,25 @@ namespace Tcg_web.Data
     {
         public DataContext(DbContextOptions<DataContext> options) : base(options) { }
 
+        // Definicion de los DbSet para cada entidad
         public DbSet<User> Users { get; set; }
         public DbSet<Card> Cards { get; set; }
-        public DbSet<Collection> Collections { get; set; } // Relacion de muchos a muchos
+        public DbSet<Set> Sets { get; set; }
+        public DbSet<Package> Packages { get; set; }
+        public DbSet<Rarity> Rarities { get; set; }
+        public DbSet<Models.Type> Types { get; set; }
+        public DbSet<Content> Contents { get; set; } // Relacion de muchos a muchos
+        public DbSet<Collection> Collections { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Collection>()
-                .HasKey(pc => new { pc.UserId, pc.CardId });
-            modelBuilder.Entity<Collection>()
-                .HasOne(p => p.User)
-                .WithMany(pc => pc.Collections)
-                .HasForeignKey(p => p.UserId);
-            modelBuilder.Entity<Collection>()
-                .HasOne(c => c.Card)
-                .WithMany(pc => pc.Collections)
-                .HasForeignKey(c => c.CardId);
-
+            // Configuracion de la relacion muchos a muchos entre Set y Card a traves de Content
             modelBuilder.Entity<Content>()
-                .HasKey(pc => new { pc.PackageId, pc.CardId });
+                .HasKey(pc => new { pc.SetId, pc.CardId });
             modelBuilder.Entity<Content>()
-                .HasOne(p => p.Package)
+                .HasOne(p => p.Set)
                 .WithMany(pc => pc.Contents)
-                .HasForeignKey(p => p.PackageId);
+                .HasForeignKey(p => p.SetId);
             modelBuilder.Entity<Content>()
                 .HasOne(c => c.Card)
                 .WithMany(pc => pc.Contents)

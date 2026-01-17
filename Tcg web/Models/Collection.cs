@@ -2,8 +2,7 @@
 {
     public class Collection
     {
-        public int UserId { get; set; }
-        public int CardId { get; set; }
+        public int Id { get; set; }
         public int Quantity { get; set; }
         public DateTime Created_at { get; set; }
         public DateTime Updated_at { get; set; }
