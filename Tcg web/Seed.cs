@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Options;
-using BCrypt.Net;
-using Tcg_web.Data;
+﻿using Tcg_web.Data;
 using Tcg_web.Models;
 
 namespace Tcg_web

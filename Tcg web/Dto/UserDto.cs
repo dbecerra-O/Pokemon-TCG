@@ -1,12 +1,10 @@
 ﻿namespace Tcg_web.Dto
 {
+    // Data Transfer Object for User
     public class UserDto
     {
         public int Id { get; set; }
-        public string UserName { get; set; }
-        public string Email { get; set; }
+        public string Username { get; set; } = string.Empty;
         public int Money { get; set; }
-        public DateTime Created_at { get; set; }
-        public DateTime Updated_at { get; set; }
     }
 }

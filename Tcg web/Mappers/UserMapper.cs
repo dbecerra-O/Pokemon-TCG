@@ -3,19 +3,19 @@ using Tcg_web.Models;
 
 namespace Tcg_web.Mappers
 {
+    // Mapper for User model to UserDto
     public static class UserMapper
     {
+        // Convert User model to UserDto
         public static UserDto ToUserDto (this User user)
         {
             return new UserDto
             {
                 Id = user.Id,
-                UserName = user.Username,
-                Email = user.Email,
+                Username = user.Username,
                 Money = user.Money,
-                Created_at = user.Created_at,
-                Updated_at = user.Updated_at
             };
         }
+
     }
 }

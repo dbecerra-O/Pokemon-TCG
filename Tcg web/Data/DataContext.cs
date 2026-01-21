@@ -13,8 +13,8 @@ namespace Tcg_web.Data
         public DbSet<Package> Packages { get; set; }
         public DbSet<Rarity> Rarities { get; set; }
         public DbSet<Models.Type> Types { get; set; }
-        public DbSet<Content> Contents { get; set; } // Relacion de muchos a muchos
         public DbSet<Collection> Collections { get; set; }
+        public DbSet<Content> Contents { get; set; } // Relacion de muchos a muchos
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

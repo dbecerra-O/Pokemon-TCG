@@ -1,12 +1,13 @@
 ﻿namespace Tcg_web.Models
 {
+    // Set model
     public class Set
     {
         public int Id { get; set; }
-        public string Name { get; set; }
-        public string ImageUrl { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string ImageUrl { get; set; } = string.Empty;
 
-        public ICollection<Content> Contents { get; } = new List<Content>();
-        public ICollection<Package> Packages { get; } = new List<Package>();
+        public ICollection<Content> Contents { get; } = [];
+        public ICollection<Package> Packages { get; } = [];
     }
 }
