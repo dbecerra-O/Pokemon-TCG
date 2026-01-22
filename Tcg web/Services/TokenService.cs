@@ -13,7 +13,7 @@ namespace Tcg_web.Services
         public string CreateToken(User user)
         {
             // Get Token Key from appsettings.json
-            var tokenKey = config["TokenKey"] ?? throw new Exception("Token Key Doesn't exist");
+            var tokenKey = config["JWT:TokenKey"] ?? throw new Exception("Token Key Doesn't exist");
 
             // Create Symmetric Security Key
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(tokenKey));
@@ -32,7 +32,9 @@ namespace Tcg_web.Services
             {
                 Subject = new ClaimsIdentity(claims), // User Claims
                 Expires = DateTime.Now.AddMinutes(360), // Token valid for 6 hours
-                SigningCredentials = creds // Signing Credentials
+                SigningCredentials = creds, // Signing Credentials
+                Issuer = config["JWT:Issuer"], // Issuer
+                Audience = config["JWT:Audience"], // Audience
             };
 
             // Create Token Handler

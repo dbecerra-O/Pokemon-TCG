@@ -2,12 +2,14 @@
 using Tcg_web.Repository.Interfaces;
 using Tcg_web.Mappers;
 using Tcg_web.Dto;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Tcg_web.Controllers
 {
     // Controller for User-related endpoints
     [Route("api/user")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         // Respository pattern implementation
