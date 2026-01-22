@@ -21,7 +21,7 @@ namespace Tcg_web.Services
             // Create Claims
             var claims = new List<Claim>
             { 
-                new Claim(JwtRegisteredClaimNames.NameId, user.Username),
+                new Claim(JwtRegisteredClaimNames.Name, user.Username),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email)
             };
 

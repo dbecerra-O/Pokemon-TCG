@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Tcg_web.Dto;
+using Tcg_web.Dto.Auth;
 using Tcg_web.Services.Interfaces;
 
 namespace Tcg_web.Controllers

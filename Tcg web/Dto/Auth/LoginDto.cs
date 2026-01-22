@@ -1,4 +1,4 @@
-﻿namespace Tcg_web.Dto
+﻿namespace Tcg_web.Dto.Auth
 {
     // Data Transfer Object for User Login
     public class LoginDto

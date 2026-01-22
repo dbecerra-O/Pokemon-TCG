@@ -1,4 +1,4 @@
-﻿using Tcg_web.Dto;
+﻿using Tcg_web.Dto.Auth;
 using Tcg_web.Mappers;
 using Tcg_web.Models;
 using Tcg_web.Repository.Interfaces;

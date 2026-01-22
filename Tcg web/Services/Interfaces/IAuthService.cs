@@ -1,4 +1,4 @@
-﻿using Tcg_web.Dto;
+﻿using Tcg_web.Dto.Auth;
 
 namespace Tcg_web.Services.Interfaces
 {

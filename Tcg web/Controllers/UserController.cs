@@ -2,6 +2,7 @@
 using Tcg_web.Repository.Interfaces;
 using Tcg_web.Mappers;
 using Tcg_web.Dto;
+using Tcg_web.Extensions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Tcg_web.Controllers
@@ -9,7 +10,6 @@ namespace Tcg_web.Controllers
     // Controller for User-related endpoints
     [Route("api/user")]
     [ApiController]
-    [Authorize]
     public class UserController : ControllerBase
     {
         // Respository pattern implementation
@@ -20,29 +20,27 @@ namespace Tcg_web.Controllers
             _userRepository = userRepository;
         }
 
-        // GET: api/Users
-        [HttpGet]
-        [ProducesResponseType(200, Type = typeof(IEnumerable<UserDto>))]
-        public async Task<IActionResult> GetUsers()
-        {
-            var users = await _userRepository.GetUsers();
-            var userDtos = users.Select(user => user.ToUserDto()).ToList();
-
-            return Ok(userDtos);
-        }
-
-        // GET: api/User/Profile/{id}
-        [HttpGet("profile/{id:int}")]
+        // GET: api/User/Profile
+        [HttpGet("profile")]
         [ProducesResponseType(200, Type = typeof(UserDto))]
-        public async Task<IActionResult> GetProfile([FromRoute] int id)
+        [Authorize]
+        public async Task<IActionResult?> GetProfile()
         {
-            var user = await _userRepository.GetProfile(id);
-            
-            if(user == null)
+            // Retrieve the username from the authenticated user
+            var username = User.GetUsername();
+            if (string.IsNullOrEmpty(username))
+            {
+                return BadRequest("Invalid Token");
+            };
+
+            // Fetch user details from the repository
+            var user = await _userRepository.GetUserByUsername(username);
+            if (user == null)
             {
                 return NotFound();
             }
 
+            // Map to UserDto and return
             return Ok(user.ToUserDto());
         }
     }
