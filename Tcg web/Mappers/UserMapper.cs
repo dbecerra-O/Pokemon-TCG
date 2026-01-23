@@ -9,6 +9,7 @@ namespace Tcg_web.Mappers
         // Convert User model to UserDto
         public static UserDto ToUserDto (this User user)
         {
+            // Map properties from User to UserDto
             return new UserDto
             {
                 Id = user.Id,

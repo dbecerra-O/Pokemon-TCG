@@ -5,13 +5,17 @@ using Tcg_web.Repository.Interfaces;
 
 namespace Tcg_web.Repository
 {
+    // Repository for Card entity
     public class CardRepository : ICardRepository
     {
+        // Dependency Injection of DataContext
         private readonly DataContext _context;
         public CardRepository(DataContext context)
         {
             _context = context;
         }
+
+        // Get all cards with their Type and Rarity included
         public async Task<List<Card>> GetAllCards()
         {
             return await _context.Cards

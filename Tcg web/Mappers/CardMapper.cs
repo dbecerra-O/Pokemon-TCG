@@ -8,7 +8,7 @@ namespace Tcg_web.Mappers
     public static class CardMapper
     {
         // Extension method to map Card to CardDto
-        public static CardDto toCardDto(this Card card)
+        public static CardDto ToCardDto(this Card card)
         {
             // Map Card to CardDto
             return new CardDto
