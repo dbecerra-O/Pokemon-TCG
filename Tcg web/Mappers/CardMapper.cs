@@ -17,13 +17,13 @@ namespace Tcg_web.Mappers
                 Name = card.Name,
                 ImageUrl = card.ImageUrl,
                 // Map Type
-                Type = new TypeDto
+                Type = card.Type == null ? null : new TypeDto
                 {
                     Id = card.Type?.Id ?? 0,
                     Name = card.Type?.Name ?? "Unknown"
                 },
                 // Map Rarity
-                Rarity = new RarityDto
+                Rarity = card.Rarity == null ? null : new RarityDto
                 {
                     Id = card.Rarity?.Id ?? 0,
                     Name = card.Rarity?.Name ?? "Unknown"
