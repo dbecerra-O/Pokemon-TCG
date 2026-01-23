@@ -1,5 +1,9 @@
-﻿namespace Tcg_web.Models
+﻿using Microsoft.EntityFrameworkCore;
+
+namespace Tcg_web.Models
 {
+    // EnergyType entity representing the energy type of cards
+    [Index(nameof(Name), IsUnique = true)]
     public class EnergyType
     {
         public int Id { get; set; }
