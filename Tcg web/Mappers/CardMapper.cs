@@ -27,6 +27,18 @@ namespace Tcg_web.Mappers
                 {
                     Id = card.Rarity?.Id ?? 0,
                     Name = card.Rarity?.Name ?? "Unknown"
+                },
+                EnergyType = new EnergyTypeDto
+                {
+                    Id = card.EnergyType.Id,
+                    Name = card.EnergyType?.Name ?? "Unknown"
+                },
+                Set = new SetDto
+                {
+                    Id= card.Set.Id,
+                    Name= card.Set?.Name ?? "Unknown",
+                    Price = card.Set?.Price ?? 0,
+                    ImageUrl = card.ImageUrl,
                 }
             };
         }

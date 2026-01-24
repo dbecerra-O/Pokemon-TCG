@@ -9,7 +9,10 @@ namespace Tcg_web.Dto.Card
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
-        public required TypeDto Type { get; set; }
-        public required RarityDto Rarity { get; set; }
+        public TypeDto? Type { get; set; }
+        public RarityDto? Rarity { get; set; }
+        public required EnergyTypeDto EnergyType { get; set; }
+        public required SetDto Set { get; set; }
+
     }
 }

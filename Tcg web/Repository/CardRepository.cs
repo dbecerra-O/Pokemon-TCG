@@ -21,6 +21,8 @@ namespace Tcg_web.Repository
             return await _context.Cards
                 .Include(c => c.Type)
                 .Include(c => c.Rarity)
+                .Include(c => c.EnergyType)
+                .Include(c => c.Set)
                 .OrderBy(p => p.Id)
                 .ToListAsync();
         }
