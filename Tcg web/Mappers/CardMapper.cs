@@ -31,14 +31,7 @@ namespace Tcg_web.Mappers
                 EnergyType = new EnergyTypeDto
                 {
                     Id = card.EnergyType.Id,
-                    Name = card.EnergyType?.Name ?? "Unknown"
-                },
-                Set = new SetDto
-                {
-                    Id= card.Set.Id,
-                    Name= card.Set?.Name ?? "Unknown",
-                    Price = card.Set?.Price ?? 0,
-                    ImageUrl = card.ImageUrl,
+                    Name = card.EnergyType.Name
                 }
             };
         }

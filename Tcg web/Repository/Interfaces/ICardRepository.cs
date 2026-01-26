@@ -6,5 +6,6 @@ namespace Tcg_web.Repository.Interfaces
     public interface ICardRepository
     {
         Task<List<Card>> GetAllCards(); // Get all cards
+        Task<List<Card>> GetCards(int amount, int SetId); // Get a specific number of cards from a set
     }
 }

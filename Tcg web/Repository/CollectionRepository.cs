@@ -24,7 +24,45 @@ namespace Tcg_web.Repository
                     .ThenInclude(card => card.Type)
                 .Include(c => c.Card)
                     .ThenInclude(card => card.Rarity)
+                .Include(c => c.Card)
+                    .ThenInclude(card => card.EnergyType)
                 .ToListAsync();
         }
+
+        public async Task AddCards(string username, List<Card> newCards)
+        {
+            var user = await _context.Users
+                .Include(u => u.Collections)
+                .FirstOrDefaultAsync(u => u.Username == username);
+
+            if (user == null) return;
+
+            foreach (var card in newCards)
+            {
+                var collectionEntry = user.Collections
+                    .FirstOrDefault(c => c.Id == card.Id);
+
+                if (collectionEntry != null)
+                {
+                    collectionEntry.Quantity += 1;
+                    collectionEntry.Updated_at = DateTime.Now;
+                }
+                else
+                {
+                    var newEntry = new Collection
+                    {    
+                        User = user,
+                        Card = card,
+                        Quantity = 1,
+                        Created_at = DateTime.Now,
+                        Updated_at = DateTime.Now
+                    };
+                    await _context.Collections.AddAsync(newEntry);
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

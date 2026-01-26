@@ -12,7 +12,6 @@ namespace Tcg_web.Dto.Card
         public TypeDto? Type { get; set; }
         public RarityDto? Rarity { get; set; }
         public required EnergyTypeDto EnergyType { get; set; }
-        public required SetDto Set { get; set; }
 
     }
 }
