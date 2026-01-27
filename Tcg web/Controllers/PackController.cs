@@ -47,5 +47,18 @@ namespace Tcg_web.Controllers
                 Cards = cardsDto
             });
         }
+
+        [HttpGet("details")]
+        [ProducesResponseType(200, Type = typeof(List<int>))]
+        public async Task<IActionResult> GetPackDetails([FromQuery] int setId)
+        {
+            var packages = await _cardRepository.GetPackage(setId);
+            if (packages == null || packages.Count == 0)
+            {
+                return NotFound("No packages found for the specified set.");
+            }
+            var packageDtos = packages.Select(p => p.ToPackageDto());
+            return Ok(packageDtos);
+        }
     }
 }

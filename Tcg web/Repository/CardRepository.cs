@@ -38,5 +38,10 @@ namespace Tcg_web.Repository
                 .Take(amount)
                 .ToListAsync();
         }
+
+        public async Task<List<Package>> GetPackage(int setId)
+        {
+            return await _context.Packages.Where(c => c.SetId == setId).ToListAsync();
+        }
     }
 }
