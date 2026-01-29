@@ -27,6 +27,7 @@ namespace Tcg_web.Repository
                 .ToListAsync();
         }
 
+        // Get cards by SetId with random ordering
         public async Task<List<Card>> GetCards(int amount, int SetId)
         {
             return await _context.Cards
@@ -39,7 +40,14 @@ namespace Tcg_web.Repository
                 .ToListAsync();
         }
 
-        public async Task<List<Package>> GetPackage(int setId)
+        // Get a specific set by its Id
+        public async Task<Set?> GetSet(int setId)
+        {
+            return await _context.Sets.FirstOrDefaultAsync(s => s.Id == setId);
+        }
+
+        // Get packages by SetId
+        public async Task<List<Package>> GetPackageBySet(int setId)
         {
             return await _context.Packages.Where(c => c.SetId == setId).ToListAsync();
         }
