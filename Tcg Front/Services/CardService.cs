@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using TcgFront.Models;
+using TcgFront.Models.Card;
 
 namespace TcgFront.Services
 {

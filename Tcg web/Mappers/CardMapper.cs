@@ -35,5 +35,31 @@ namespace Tcg_web.Mappers
                 }
             };
         }
+
+        public static TypeDto ToTypeDto(this Models.Type type)
+        {
+            return new TypeDto
+            {
+                Id = type.Id,
+                Name = type.Name
+            };
+        }
+
+        public static RarityDto ToRarityDto(this Rarity rarity)
+        {
+            return new RarityDto
+            {
+                Id = rarity.Id,
+                Name = rarity.Name
+            };
+        }
+        public static EnergyTypeDto ToEnergyTypeDto(this EnergyType energyType)
+        {
+            return new EnergyTypeDto
+            {
+                Id = energyType.Id,
+                Name = energyType.Name
+            };
+        }
     }
 }

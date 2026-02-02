@@ -72,5 +72,23 @@ namespace Tcg_web.Repository
         {
             return await _context.Packages.Where(c => c.SetId == setId).ToListAsync();
         }
+
+        // Get all Types
+        public Task<List<Models.Type>> GetTypes()
+        {
+            return _context.Types.OrderBy(c => c.Id).ToListAsync();
+        }
+
+        // Get all rarities
+        public Task<List<Rarity>> GetRarities()
+        {
+            return _context.Rarities.OrderBy(c => c.Id).ToListAsync();
+        }
+
+        // Get all energy types
+        public Task<List<EnergyType>> GetEnergyTypes()
+        {
+            return _context.EnergyTypes.OrderBy(c => c.Id).ToListAsync();
+        }
     }
 }
