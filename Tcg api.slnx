@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="Tcg Front/TcgFront.csproj" Id="a8409352-06c8-4163-a40b-34c08470f382" />
   <Project Path="Tcg web/Tcg Api.csproj" />
 </Solution>

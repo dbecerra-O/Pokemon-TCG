@@ -1,5 +1,6 @@
 ﻿namespace Tcg_web.Dto.Card
 {
+    // Data Transfer Object for Package entity
     public class PackageDto
     {
         public int Id { get; set; }
