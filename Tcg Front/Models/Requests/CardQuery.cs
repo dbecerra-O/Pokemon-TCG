@@ -1,4 +1,4 @@
-﻿namespace TcgFront.Models
+﻿namespace TcgFront.Models.Requests
 {
     public class CardQuery
     {

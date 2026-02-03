@@ -1,18 +1,61 @@
 ﻿@page "/login"
+@using TcgFront.Models.Requests
+@using TcgFront.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
 
-<h3>Sign in</h3>
-<form>
-    <div class="mb-3">
-        <label for="inputEmail" class="form-label">Email address</label>
-        <input type="email" class="form-control" id="inputEmail" placeholder="tcgweb@gmail.com" />
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h3>Iniciar Sesión</h3>
+            </div>
+            <div class="card-body">
+                <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+                    <DataAnnotationsValidator />
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger">@errorMessage</div>
+                    }
+
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <InputText @bind-Value="loginModel.username" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Contraseña</label>
+                        <InputText @bind-Value="loginModel.password" type="password" class="form-control" />
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Entrar</button>
+                </EditForm>
+            </div>
+            <div class="card-footer text-center">
+                <a href="/register">¿No tienes cuenta? Regístrate</a>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="inputPassword" class="form-label">Password</label>
-        <input type="password" class="form-control" id="inputPassword" placeholder="Password" />
-    </div>
-    <button type="submit" class="btn btn-primary">Sign in</button>
-</form>
+</div>
 
 @code {
+    private LoginRequest loginModel = new LoginRequest();
+    private string errorMessage = "";
 
+    private async Task HandleLogin()
+    {
+        errorMessage = ""; // Clear previous error message
+
+        var error = await AuthService.Login(loginModel);
+
+        if (error == null)
+        {
+            Navigation.NavigateTo("/");
+        }
+        else
+        {
+            errorMessage = error;
+        }
+    }
 }

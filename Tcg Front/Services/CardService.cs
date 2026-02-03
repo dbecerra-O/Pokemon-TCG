@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Json;
-using TcgFront.Models;
-using TcgFront.Models.Card;
+using TcgFront.Models.Dtos;
+using TcgFront.Models.Requests;
 
 namespace TcgFront.Services
 {

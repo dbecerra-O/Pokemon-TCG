@@ -1,6 +1,6 @@
-﻿namespace TcgFront.Models.Card
+﻿namespace TcgFront.Models.Dtos
 {
-    public class EnergyTypeDto
+    public class RarityDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
