@@ -40,12 +40,7 @@ namespace Tcg_web.Services
             var token = _tokenService.CreateToken(user);
 
             // return user dto
-            return new AuthResponse
-            {
-                Username = user.Username,
-                Email = user.Email,
-                Token = token
-            };
+            return new AuthResponse{Token = token};
         }
 
         // Register user
@@ -76,12 +71,7 @@ namespace Tcg_web.Services
 
             // Create token
             var token = _tokenService.CreateToken(createdUser);
-            return new AuthResponse 
-            {
-                Username = createdUser.Username,
-                Email = createdUser.Email,
-                Token = token
-            };
+            return new AuthResponse { Token = token };
         }
     }
 }

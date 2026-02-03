@@ -1,0 +1,82 @@
+﻿@page "/user/register"
+@using TcgFront.Models.Requests
+@using TcgFront.Services
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+
+<div class="row justify-content-center mt-5">
+    <div class="col-md-4">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h3>Register</h3>
+            </div>
+            <div class="card-body">
+                <EditForm Model="registerModel" OnValidSubmit="HandleRegister">
+                    <DataAnnotationsValidator />
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger">@errorMessage</div>
+                    }
+
+                    <div class="mb-3">
+                        <label>Username</label>
+                        <InputText @bind-Value="registerModel.username" class="form-control" />
+                        <ValidationMessage For="@(() => registerModel.username)"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Email</label>
+                        <InputText @bind-Value="registerModel.email" class="form-control" />
+                        <ValidationMessage For="@(() => registerModel.email)"/>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Contraseña</label>
+                        <InputText @bind-Value="registerModel.password" type="password" class="form-control" />
+                        <ValidationMessage For="@(() => registerModel.password)"/>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label>Confirmar Contraseña</label>
+                        <InputText @bind-Value="registerModel.confirmPassword" type="password" class="form-control" />
+                        <ValidationMessage For="@(() => registerModel.confirmPassword)"/>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">Entrar</button>
+                </EditForm>
+            </div>
+            <div class="card-footer text-center">
+                Do you have account? <a href="/user/login">Sign in</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code {
+    // Register model to bind form data
+    private RegisterRequest registerModel = new RegisterRequest();
+    private string errorMessage = ""; // To hold error messages
+
+    // Handle form submission
+    private async Task HandleRegister()
+    {
+        errorMessage = ""; // Clear previous error message
+        
+        // Call the AuthService to register the user
+        var error = await AuthService.Register(registerModel);
+
+        // If registration is successful, navigate to home page
+        if (error == null)
+        {
+            Navigation.NavigateTo("/");
+        }
+        // If there's an error, display it
+        else
+        {
+            errorMessage = error;
+        }
+
+    }
+}

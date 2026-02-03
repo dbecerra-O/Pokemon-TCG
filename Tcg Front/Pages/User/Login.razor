@@ -1,4 +1,4 @@
-﻿@page "/login"
+﻿@page "/user/login"
 @using TcgFront.Models.Requests
 @using TcgFront.Services
 @inject AuthService AuthService
@@ -8,9 +8,10 @@
     <div class="col-md-4">
         <div class="card shadow">
             <div class="card-header bg-primary text-white text-center">
-                <h3>Iniciar Sesión</h3>
+                <h3>Login</h3>
             </div>
             <div class="card-body">
+                @* form to handle user login *@
                 <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
                     <DataAnnotationsValidator />
 
@@ -20,7 +21,7 @@
                     }
 
                     <div class="mb-3">
-                        <label>Email</label>
+                        <label>Username</label>
                         <InputText @bind-Value="loginModel.username" class="form-control" />
                     </div>
 
@@ -33,26 +34,29 @@
                 </EditForm>
             </div>
             <div class="card-footer text-center">
-                <a href="/register">¿No tienes cuenta? Regístrate</a>
+                Don't you have an account? <a href="/user/register">Sign up</a>
             </div>
         </div>
     </div>
 </div>
 
 @code {
+    // Login model to bind form data
     private LoginRequest loginModel = new LoginRequest();
-    private string errorMessage = "";
+    private string errorMessage = ""; // To hold error messages
 
     private async Task HandleLogin()
     {
         errorMessage = ""; // Clear previous error message
 
+        // Call AuthService to perform login
         var error = await AuthService.Login(loginModel);
-
+        // If login is successful, navigate to home page
         if (error == null)
         {
             Navigation.NavigateTo("/");
         }
+        // If there's an error, display it
         else
         {
             errorMessage = error;
