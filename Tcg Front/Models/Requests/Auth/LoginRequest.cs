@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TcgFront.Models.Requests
+namespace TcgFront.Models.Auth
 {
     public class LoginRequest
     {

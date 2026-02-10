@@ -1,7 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace TcgFront.Models.Requests
+namespace TcgFront.Models.Auth
 {
+    // Model for user registration request
     public class RegisterRequest
     {
         [Required]

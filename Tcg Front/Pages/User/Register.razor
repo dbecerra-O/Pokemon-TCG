@@ -1,6 +1,9 @@
 ﻿@page "/user/register"
+@layout TcgFront.Layout.AuthLayout
+@using TcgFront.Models.Auth
 @using TcgFront.Models.Requests
 @using TcgFront.Services
+@using TcgFront.Components.Common
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 
@@ -11,8 +14,9 @@
                 <h3>Register</h3>
             </div>
             <div class="card-body">
+                @* form to handle user registration *@
                 <EditForm Model="registerModel" OnValidSubmit="HandleRegister">
-                    <DataAnnotationsValidator />
+                    <DataAnnotationsValidator /> @* validate form data *@
 
                     @if (!string.IsNullOrEmpty(errorMessage))
                     {
@@ -32,18 +36,25 @@
                     </div>
 
                     <div class="mb-3">
-                        <label>Contraseña</label>
-                        <InputText @bind-Value="registerModel.password" type="password" class="form-control" />
-                        <ValidationMessage For="@(() => registerModel.password)"/>
+                        <label>Password</label>
+                        <InputPassword Label="password" @bind-Value="registerModel.password"/>
                     </div>
                     
                     <div class="mb-3">
-                        <label>Confirmar Contraseña</label>
-                        <InputText @bind-Value="registerModel.confirmPassword" type="password" class="form-control" />
-                        <ValidationMessage For="@(() => registerModel.confirmPassword)"/>
+                        <label>Confirm Password</label>
+                        <InputPassword Label="password" @bind-Value="registerModel.confirmPassword" />
                     </div>
 
-                    <button type="submit" class="btn btn-success w-100">Entrar</button>
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span role="status" aria-hidden="true">Registrando...</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-person-plus-fill me-2">Registrarse</i>
+                        }
+                    </button>
                 </EditForm>
             </div>
             <div class="card-footer text-center">
@@ -58,11 +69,14 @@
     // Register model to bind form data
     private RegisterRequest registerModel = new RegisterRequest();
     private string errorMessage = ""; // To hold error messages
+    private bool isLoading = false;
 
     // Handle form submission
     private async Task HandleRegister()
     {
+        isLoading = true;
         errorMessage = ""; // Clear previous error message
+        await Task.Delay(500); // Simulate a short delay for better UX
         
         // Call the AuthService to register the user
         var error = await AuthService.Register(registerModel);

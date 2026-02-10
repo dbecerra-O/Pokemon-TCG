@@ -1,6 +1,7 @@
 ﻿using Blazored.LocalStorage;
+using Microsoft.AspNetCore.Components.Authorization;
 using System.Net.Http.Json;
-using TcgFront.Models.Requests;
+using TcgFront.Models.Auth;
 
 namespace TcgFront.Services
 {
@@ -9,11 +10,13 @@ namespace TcgFront.Services
         // Inject HttpClient and ILocalStorageService dependencies
         private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorage;
+        private readonly AuthenticationStateProvider _authStateProvider;
         // Constructor to initialize dependencies
-        public AuthService(HttpClient httpClient, ILocalStorageService localStorage)
+        public AuthService(HttpClient httpClient, ILocalStorageService localStorage, AuthenticationStateProvider authStateProvider)
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
+            _authStateProvider = authStateProvider;
         }
 
         // Method to register a new user
@@ -27,6 +30,7 @@ namespace TcgFront.Services
             {
                 var token = result.Content.ReadAsStringAsync(); // Read the token from the response
                 await _localStorage.SetItemAsync("authToken", token); // Store the token in local storage
+                await _authStateProvider.GetAuthenticationStateAsync(); // Update the authentication state
                 return null; // Return null indicating success
             }
 
@@ -53,6 +57,8 @@ namespace TcgFront.Services
         public async Task Logout()
         {
             await _localStorage.RemoveItemAsync("authToken"); // Remove the token from local storage
+            await _authStateProvider.GetAuthenticationStateAsync(); // Update the authentication state
         }
+
     }
 }

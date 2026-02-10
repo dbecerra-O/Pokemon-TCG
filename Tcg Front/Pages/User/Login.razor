@@ -1,4 +1,7 @@
 ﻿@page "/user/login"
+@layout TcgFront.Layout.AuthLayout
+@using TcgFront.Components.Common
+@using TcgFront.Models.Auth
 @using TcgFront.Models.Requests
 @using TcgFront.Services
 @inject AuthService AuthService
@@ -13,7 +16,7 @@
             <div class="card-body">
                 @* form to handle user login *@
                 <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
-                    <DataAnnotationsValidator />
+                    <DataAnnotationsValidator /> @* validate form data *@
 
                     @if (!string.IsNullOrEmpty(errorMessage))
                     {
@@ -26,11 +29,20 @@
                     </div>
 
                     <div class="mb-3">
-                        <label>Contraseña</label>
-                        <InputText @bind-Value="loginModel.password" type="password" class="form-control" />
+                        <label>Password</label>
+                        <InputPassword Label="password" @bind-Value="loginModel.password" />
                     </div>
 
-                    <button type="submit" class="btn btn-success w-100">Entrar</button>
+                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm" disabled="@isLoading">
+                        @if (isLoading)
+                        {
+                            <span role="status" aria-hidden="true">Logging in</span>
+                        }
+                        else
+                        {
+                            <i class="bi bi-person-plus-fill me-2">Login</i>
+                        }
+                    </button>
                 </EditForm>
             </div>
             <div class="card-footer text-center">
@@ -44,11 +56,14 @@
     // Login model to bind form data
     private LoginRequest loginModel = new LoginRequest();
     private string errorMessage = ""; // To hold error messages
+    private bool isLoading = false; // To indicate loading state
 
     private async Task HandleLogin()
     {
+        isLoading = true; // Set loading state
         errorMessage = ""; // Clear previous error message
 
+        await Task.Delay(500); // Simulate a short delay for better UX
         // Call AuthService to perform login
         var error = await AuthService.Login(loginModel);
         // If login is successful, navigate to home page
