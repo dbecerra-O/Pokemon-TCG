@@ -15,6 +15,7 @@ builder.Services.AddScoped(sp => new HttpClient {
 
 builder.Services.AddScoped<TcgFront.Services.AuthService>();
 builder.Services.AddScoped<TcgFront.Services.CardService>();
+builder.Services.AddScoped<TcgFront.Services.PackService>();
 builder.Services.AddBlazoredLocalStorage();
 
 builder.Services.AddAuthorizationCore();

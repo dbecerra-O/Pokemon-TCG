@@ -79,6 +79,12 @@ namespace Tcg_web.Repository
             return _context.Types.OrderBy(c => c.Id).ToListAsync();
         }
 
+        // Get all sets
+        public Task<List<Set>> GetSets()
+        {
+            return _context.Sets.OrderBy(c => c.Id).ToListAsync();
+        }
+
         // Get all rarities
         public Task<List<Rarity>> GetRarities()
         {

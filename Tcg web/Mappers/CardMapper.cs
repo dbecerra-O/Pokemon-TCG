@@ -61,5 +61,16 @@ namespace Tcg_web.Mappers
                 Name = energyType.Name
             };
         }
+
+        public static SetDto ToSetDto(this Set set)
+        {
+            return new SetDto
+            {
+                Id = set.Id,
+                Name = set.Name,
+                Price = set.Price,
+                ImageUrl = set.ImageUrl
+            };
+        }
     }
 }

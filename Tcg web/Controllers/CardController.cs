@@ -21,7 +21,7 @@ namespace Tcg_web.Controllers
 
         // Endpoint to get all cards with optional query parameters for filtering and pagination
         [HttpGet("all")]
-        [ProducesResponseType (200, Type = typeof(List<CardDto>))]
+        [ProducesResponseType(200, Type = typeof(List<CardDto>))]
         public async Task<IActionResult> GetAllCards([FromQuery] QueryObject query)
         {
             var cards = await _cardRepository.GetAllCards(query);
@@ -42,7 +42,7 @@ namespace Tcg_web.Controllers
         }
 
         // Endpoint to get a list of all card types
-        [HttpGet("/types")]
+        [HttpGet("types")]
         [ProducesResponseType(200, Type = typeof(List<TypeDto>))]
         public async Task<IActionResult> GetTypes()
         {
@@ -52,7 +52,7 @@ namespace Tcg_web.Controllers
         }
 
         // Endpoint to get a list of all card rarities
-        [HttpGet("/rarities")]
+        [HttpGet("rarities")]
         [ProducesResponseType(200, Type = typeof(List<RarityDto>))]
         public async Task<IActionResult> GetRarities()
         {
@@ -62,13 +62,23 @@ namespace Tcg_web.Controllers
         }
 
         // Endpoint to get a list of all energy types
-        [HttpGet("/energytypes")]
+        [HttpGet("energytypes")]
         [ProducesResponseType(200, Type = typeof(List<EnergyTypeDto>))]
         public async Task<IActionResult> GetEnergyTypes()
         {
             var energyTypes = await _cardRepository.GetEnergyTypes();
             var energyTypeDtos = energyTypes.Select(e => e.ToEnergyTypeDto()).ToList();
             return Ok(energyTypeDtos);
+        }
+        // Endpoint to get a list of all card sets
+
+        [HttpGet("sets")]
+        [ProducesResponseType(200, Type = typeof(List<SetDto>))]
+        public async Task<IActionResult> GetSets()
+        {
+            var sets = await _cardRepository.GetSets();
+            var setDtos = sets.Select(s => s.ToSetDto()).ToList();
+            return Ok(setDtos);
         }
     }
 }

@@ -2,56 +2,38 @@
 @layout TcgFront.Layout.MainLayout
 @using TcgFront.Models.Dtos
 @using TcgFront.Services
-@inject CardService CardService
+@inject PackService PackService
 
 <PageTitle>Mercado TCG</PageTitle>
 
 <div class="container-fluid">
-    <h1 class="text-center my-4">Mercado de Cartas</h1>
-
-    @if (cards == null)
+    <h1 class="text-center my-4">Come on Open Pack</h1>
+    @if (sets == null)
     {
-        <div class="d-flex justify-content-center">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Cargando...</span>
-            </div>
-        </div>
+        <div>
+            <h1>Is Loading...</h1>
+        </div>    
     }
     else
     {
-        <div class="card-grid">
-            @foreach (var card in cards)
-            {
-                <div class="tcg-card">
-                    <div class="card-image-container">
-                        <img src="@card.ImageUrl"
-                             alt="@card.Name"
-                             class="card-img" />
-                    </div>
-
-                    <div class="card-info">
-                        <h4 class="card-name">@card.Name</h4>
-
-                        @if (card.Rarity != null)
-                        {
-                            <span class="card-rarity">@card.Rarity.Name</span>
-                        }
-
-                        <button class="btn btn-sm btn-outline-primary mt-2 w-100">
-                            Ver Detalle
-                        </button>
-                    </div>
+        @foreach(var set in sets)
+        {
+            <div class="card" style="width: 18rem;">
+                <img src="@set.ImageUrl" class="card-img-top" alt="@set.Name"/>
+                <div class="card-body">
+                    <h5 class="card-title">@set.Name</h5>
+                    <a href="#" class="btn btn-primary">@set.price</a>
                 </div>
-            }
-        </div>
+            </div>
+        }
     }
 </div>
 
 @code {
-    private List<CardDto> cards;
+    private List<SetDto> sets;
 
     protected override async Task OnInitializedAsync()
     {
-        cards = await CardService.GetAllCards();
+        sets = await PackService.GetAllSets();
     }
 }
