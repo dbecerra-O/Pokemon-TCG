@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using TcgFront.Models.Dtos;
+using TcgFront.Models.Dtos.Card;
 using TcgFront.Models.Requests;
 
 namespace TcgFront.Services
@@ -17,6 +18,12 @@ namespace TcgFront.Services
             var response = await _httpClient.GetFromJsonAsync<PagedResult<CardDto>>("api/card/all");
 
             return response?.Data ?? new List<CardDto>();
+        }
+
+        public async Task<List<CollectionDto>?> GetUserCollection()
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<CollectionDto>>("api/collection/my");
+            return response;
         }
     }
 }

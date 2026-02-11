@@ -8,7 +8,8 @@ namespace Tcg_web.Dto
         public bool success { get; set; }
         public string message { get; set; } = string.Empty;
         public int SetId { get; set; }
-        public int Cost { get; set; }
+        public int cost { get; set; }
+        public int newBalance { get; set; }
         public List<CardDto> cards { get; set; } = [];
 
     }

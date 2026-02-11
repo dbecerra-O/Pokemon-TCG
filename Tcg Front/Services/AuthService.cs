@@ -1,7 +1,9 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using TcgFront.Models.Auth;
+using TcgFront.Models.Requests.Auth;
 
 namespace TcgFront.Services
 {
@@ -11,12 +13,14 @@ namespace TcgFront.Services
         private readonly HttpClient _httpClient;
         private readonly ILocalStorageService _localStorage;
         private readonly AuthenticationStateProvider _authStateProvider;
+        private readonly UserService _userService;
         // Constructor to initialize dependencies
-        public AuthService(HttpClient httpClient, ILocalStorageService localStorage, AuthenticationStateProvider authStateProvider)
+        public AuthService(HttpClient httpClient, ILocalStorageService localStorage, AuthenticationStateProvider authStateProvider, UserService userService)
         {
             _httpClient = httpClient;
             _localStorage = localStorage;
             _authStateProvider = authStateProvider;
+            _userService = userService;
         }
 
         // Method to register a new user
@@ -28,8 +32,8 @@ namespace TcgFront.Services
             // Check if the registration was successful
             if (result.IsSuccessStatusCode)
             {
-                var token = result.Content.ReadAsStringAsync(); // Read the token from the response
-                await _localStorage.SetItemAsync("authToken", token); // Store the token in local storage
+                var response = await result.Content.ReadFromJsonAsync<LoginResponse>(); // Read the token from the response
+                await _localStorage.SetItemAsync("authToken", response?.Token); // Store the token in local storage
                 await _authStateProvider.GetAuthenticationStateAsync(); // Update the authentication state
                 return null; // Return null indicating success
             }
@@ -46,18 +50,20 @@ namespace TcgFront.Services
             // Check if the login was successful
             if (result.IsSuccessStatusCode)
             {
-                var token = await result.Content.ReadAsStringAsync(); // Read the token from the response
-                await _localStorage.SetItemAsync("authToken", token); // Store the token in local storage
+                var response = await result.Content.ReadFromJsonAsync<LoginResponse>();
+                await _localStorage.SetItemAsync("authToken", response?.Token); // Store the token in local storage
+                await _authStateProvider.GetAuthenticationStateAsync();
                 return null; // Return null indicating success
             }
 
-            return "Error logging in. Please verify your credentials."; // Return error message if login failed
+            return "Login failed"; // Return error message if login failed
         }
 
         public async Task Logout()
         {
             await _localStorage.RemoveItemAsync("authToken"); // Remove the token from local storage
             await _authStateProvider.GetAuthenticationStateAsync(); // Update the authentication state
+
         }
 
     }

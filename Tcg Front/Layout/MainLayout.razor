@@ -1,4 +1,6 @@
 ﻿@inherits LayoutComponentBase
+@inject TcgFront.Services.UserService UserService
+
 <div class="flex-column position-relative">
     <NavBar />
     <main class="pt-5 mt-5">
@@ -8,5 +10,8 @@
     </main>
 </div>
 @code {
-    
+    protected override async Task OnInitializedAsync()
+    {
+        await UserService.FetchProfile();
+    }
 }

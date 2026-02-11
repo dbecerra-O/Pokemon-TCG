@@ -73,7 +73,8 @@ namespace Tcg_web.Services
                     success = true,
                     message = "Pack opened successfully",
                     SetId = setId,
-                    Cost = setInfo.Price,
+                    cost = setInfo.Price,
+                    newBalance = user.Money,
                     cards = newCards.Select(c => c.ToCardDto()).ToList()
                 };
 

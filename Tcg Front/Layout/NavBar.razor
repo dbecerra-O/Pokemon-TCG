@@ -1,5 +1,6 @@
 ﻿@inject NavigationManager Navigation
 @inject TcgFront.Services.AuthService AuthService
+@inject TcgFront.Services.UserService UserService
 @using Microsoft.AspNetCore.Components.Authorization
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top px-4 py-3 shadow">
@@ -31,6 +32,10 @@
             <Authorized>
                 <div class="d-flex align-items-center user-dropdown-container">
                     <div class="text-white d-flex align-items-center gap-2 cursor-pointer">
+                        <div class="text-white me-3">
+                            <i class="bi bi-coin text-warning"></i>
+                            <strong>$ @(UserService.User?.Money.ToString("N2") ?? "0.00")</strong>
+                        </div>
                         <div class="text-end d-none d-sm-block lh-1">
                             <span class="d-block small text-muted">Hola,</span>
                             <span class="fw-bold">@context.User.Identity?.Name</span>
@@ -59,10 +64,20 @@
 </nav>
 
 @code {
+    protected override void OnInitialized()
+    {
+        UserService.onChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        UserService.onChange -= StateHasChanged;
+    }
+
     private async Task HandleLogout()
     {
         // Redirect to login page and clear auth state
         await AuthService.Logout();
-        Navigation.NavigateTo("/login", true);
+        Navigation.NavigateTo("/user/login", true);
     }
 }

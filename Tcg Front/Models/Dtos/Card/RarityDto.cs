@@ -1,6 +1,6 @@
-﻿namespace TcgFront.Models.Dtos
+﻿namespace TcgFront.Models.Dtos.Card
 {
-    public class TypeDto
+    public class RarityDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;

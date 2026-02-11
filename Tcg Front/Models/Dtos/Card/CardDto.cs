@@ -1,4 +1,4 @@
-﻿namespace TcgFront.Models.Dtos
+﻿namespace TcgFront.Models.Dtos.Card
 {
     public class CardDto
     {

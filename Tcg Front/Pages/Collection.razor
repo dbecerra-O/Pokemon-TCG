@@ -1,12 +1,13 @@
 ﻿@page "/collection"
 @using TcgFront.Models.Dtos
+@using TcgFront.Models.Dtos.Card
 @using TcgFront.Services
 @inject CardService CardService
 @layout TcgFront.Layout.MainLayout
 
 <PageTitle>Collection</PageTitle>
 
-<div class="container-fluid">
+<div class="container-fluid flex-row">
     @if (cards == null)
     {
         <div class="d-flex justify-content-center">
@@ -16,37 +17,29 @@
         </div>
     }
     else{
-        <div class="card-grid">
-            @foreach(var card in cards)
-            {
+         @foreach(var card in cards)
+        {
+            <div class="card">
+                <img class="card-img-top" src="@card.Card.ImageUrl"/>
+                <section>
+                    <h2>@card.Card.Name</h2>
+                    <h3 class="card-subtitle">@card.Card.Rarity?.Name</h3>
+                    <h3 class="card-subtitle">@card.Card.Type?.Name</h3>
+                    <h3 class="card-subtitle">@card.Card.EnergyType.Name</h3>
+                    <h3 class="card-subtitle">@card.Quantity</h3>
+                </section>
                 <div>
-                    <div class="card-image-container">
-                        <img src="@card.ImageUrl"
-                             alt="@card.Name"/>
-                    </div>
-                    
-                    <div>
-                        <h4>@card.Name</h4>
 
-                        @if (card.Rarity != null)
-                        {
-                            <span class="card-rarity">@card.Rarity.Name</span>
-                        }
-
-                        <button class="btn btn-sm btn-outline-primary mt-2 w-100">
-                            Ver Detalle
-                        </button>
-                    </div>
                 </div>
-            }
-        </div>
+            </div>
+        }
     }
 </div>
 
 @code {
-    private List<CardDto> cards;
+    private List<CollectionDto> cards;
     protected override async Task OnInitializedAsync()
     {
-        cards = await CardService.GetAllCards();
+        cards = await CardService.GetUserCollection();
     }
 }
