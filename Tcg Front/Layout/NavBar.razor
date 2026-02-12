@@ -1,78 +1,95 @@
 ﻿@inject NavigationManager Navigation
 @inject TcgFront.Services.AuthService AuthService
 @inject TcgFront.Services.UserService UserService
+@inject IJSRuntime JSRuntime
 @using Microsoft.AspNetCore.Components.Authorization
 
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top px-4 py-3 shadow">
-    <div class="container-fluid">
+<nav class="navbar-wrapper" id="main-navbar">
+    <div class="navbar-content">
 
-        <div class="d-flex align-items-center">
-            <a class="navbar-brand fw-bold" href="/">TCG MARKET</a>
-            <div class="navbar-nav ms-4 d-none d-md-flex">
-                <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">Inicio</NavLink>
-                <NavLink class="nav-link" href="/market">Mercado</NavLink>
-                
-                <AuthorizeView>
-                    <Authorized>
-                        <NavLink class="nav-link" href="/collection">Mi Colección</NavLink>
-                    </Authorized>
-                </AuthorizeView>
-            </div>
+        <div class="nav-left">
+            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">Home</NavLink>
+            <NavLink class="nav-link" href="/market">Market</NavLink>
+            <AuthorizeView>
+                <Authorized>
+                    <NavLink class="nav-link" href="/collection">Collection</NavLink>
+                </Authorized>
+            </AuthorizeView>
         </div>
 
-        <AuthorizeView>
-            
-            <NotAuthorized>
-                <div class="d-flex align-items-center gap-2">
-                    <NavLink class="btn btn-outline-light btn-sm" href="user/login">Iniciar Sesión</NavLink>
-                    <NavLink class="btn btn-light btn-sm" href="user/register">Registrarse</NavLink>
-                </div>
-            </NotAuthorized>
+        <div class="nav-center">
+            <a href="/" class="brand-logo-container">
+                <img src="/Logo.webp" alt="Tcg Market" class="brand-img"/>    
+            </a>
+        </div>
 
-            <Authorized>
-                <div class="d-flex align-items-center user-dropdown-container">
-                    <div class="text-white d-flex align-items-center gap-2 cursor-pointer">
-                        <div class="text-white me-3">
-                            <i class="bi bi-coin text-warning"></i>
-                            <strong>$ @(UserService.User?.Money.ToString("N2") ?? "0.00")</strong>
-                        </div>
-                        <div class="text-end d-none d-sm-block lh-1">
-                            <span class="d-block small text-muted">Hola,</span>
-                            <span class="fw-bold">@context.User.Identity?.Name</span>
-                        </div>
-                        <i class="bi bi-person-circle fs-3"></i>
+        <div class="nav-right">
+            <AuthorizeView>
+                <NotAuthorized>
+                    <NavLink class="nav-link" href="user/login">Login</NavLink>
+                    <NavLink class="nav-btn-primary" href="user/register">Register</NavLink>
+                </NotAuthorized>
+
+                <Authorized>
+                    <div class="money-badge">
+                        <span class="currency-symbol">$</span>
+                        <span class="amount">@(UserService.User?.Money.ToString("N2") ?? "0.00")</span>
                     </div>
 
-                    <div class="user-dropdown-menu shadow rounded">
-                        <div class="p-3 text-center border-bottom bg-light">
-                            <small class="text-muted fw-bold">Mi Cuenta</small>
-                        </div>
-                        <NavLink class="dropdown-item py-2" href="profile">
-                            <i class="bi bi-person-badge me-2"></i> Ver Perfil
-                        </NavLink>
-                        <div class="dropdown-divider m-0"></div>
-                        <button class="dropdown-item text-danger py-2" @onclick="HandleLogout">
-                            <i class="bi bi-box-arrow-right me-2"></i> Cerrar Sesión
+                    <div class="user-menu-container">
+                        <button class="user-btn" @onclick="ToggleUserMenu">
+                            <div class="avatar-circle">
+                                @context.User.Identity?.Name?.Substring(0, 1).ToUpper()
+                            </div>
                         </button>
-                    </div>
-                </div>
-            </Authorized>
 
-        </AuthorizeView>
+                        @if (showUserMenu)
+                        {
+                            <div class="dropdown-menu">
+                                <div class="dropdown-header">
+                                    <span class="user-name">@context.User.Identity?.Name</span>
+                                    <span class="user-role">Collector</span>
+                                </div>
+                                <div class="dropdown-divider"></div>
+                                <NavLink class="dropdown-item" href="profile" @onclick="CloseMenu">
+                                    <i class="icon-profile"></i> Profile
+                                </NavLink>
+                                <button class="dropdown-item danger" @onclick="HandleLogout">
+                                    Logout
+                                </button>
+                            </div>
+                        }
+                    </div>
+                </Authorized>
+            </AuthorizeView>
+        </div>
 
     </div>
 </nav>
 
 @code {
+    private bool showUserMenu = false;
+
     protected override void OnInitialized()
     {
         UserService.onChange += StateHasChanged;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("initNavbarScroll");
+        }
     }
 
     public void Dispose()
     {
         UserService.onChange -= StateHasChanged;
     }
+
+    private void ToggleUserMenu() => showUserMenu = !showUserMenu;
+    private void CloseMenu() => showUserMenu = false;
 
     private async Task HandleLogout()
     {

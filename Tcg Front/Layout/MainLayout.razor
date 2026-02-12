@@ -1,17 +1,22 @@
 ﻿@inherits LayoutComponentBase
 @inject TcgFront.Services.UserService UserService
 
-<div class="flex-column position-relative">
+<div class="main-layout">
     <NavBar />
-    <main class="pt-5 mt-5">
-        <article class="content px-4">
-            @Body
-        </article>
+    <main class="content-wrapper">
+        @Body
     </main>
 </div>
 @code {
     protected override async Task OnInitializedAsync()
     {
-        await UserService.FetchProfile();
+        try
+        {
+            await UserService.FetchProfile();
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Usuario visitante (no logueado)");
+        }
     }
 }

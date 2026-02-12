@@ -1,6 +1,24 @@
 ﻿@inherits LayoutComponentBase
-<div class="auth-container d-flex justify-content-center align-items-center min-vh-100 bg-light">
-    <div class="container">
-        @Body
+<div class="auth-layout">
+
+    <div class="auth-background">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+    <div class="auth-card-container">
+
+        <a href="/" class="back-link">
+            ← Volver al inicio
+        </a>
+
+        <div class="glass-form">
+            @Body
+        </div>
+
+        <div class="auth-footer">
+            <small>© 2024 TCG Market. Todos los derechos reservados.</small>
+        </div>
     </div>
 </div>
