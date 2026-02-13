@@ -7,7 +7,12 @@
 <nav class="navbar-wrapper" id="main-navbar">
     <div class="navbar-content">
 
-        <div class="nav-left">
+        <button class="mobile-toggle" @onclick="ToggleMobileMenu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </button>
+
+        <div class="nav-left desktop-only">
             <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">Home</NavLink>
             <NavLink class="nav-link" href="/market">Market</NavLink>
             <AuthorizeView>
@@ -23,15 +28,15 @@
             </a>
         </div>
 
-        <div class="nav-right">
+        <div class="nav-right desktop-only">
             <AuthorizeView>
                 <NotAuthorized>
-                    <NavLink class="nav-link" href="user/login">Login</NavLink>
+                    <NavLink class="nav-link desktop-only" href="user/login">Login</NavLink>
                     <NavLink class="nav-btn-primary" href="user/register">Register</NavLink>
                 </NotAuthorized>
 
                 <Authorized>
-                    <div class="money-badge">
+                    <div class="money-badge desktop-only">
                         <span class="currency-symbol">$</span>
                         <span class="amount">@(UserService.User?.Money.ToString("N2") ?? "0.00")</span>
                     </div>
@@ -51,9 +56,7 @@
                                     <span class="user-role">Collector</span>
                                 </div>
                                 <div class="dropdown-divider"></div>
-                                <NavLink class="dropdown-item" href="profile" @onclick="CloseMenu">
-                                    <i class="icon-profile"></i> Profile
-                                </NavLink>
+                                <NavLink class="dropdown-item" href="profile" @onclick="CloseMenu"></NavLink>
                                 <button class="dropdown-item danger" @onclick="HandleLogout">
                                     Logout
                                 </button>
@@ -63,38 +66,67 @@
                 </Authorized>
             </AuthorizeView>
         </div>
-
     </div>
 </nav>
 
+<div class="mobile-menu-overlay @(isMobileMenuOpen ? "open" : "")">
+    <div class="mobile-menu-content">
+        <button class="close-btn" @onclick="ToggleMobileMenu">✕</button>
+
+        <AuthorizeView>
+            <Authorized>
+                <div class="mobile-user-info">
+                    <div class="avatar-large">@context.User.Identity?.Name?.Substring(0, 1).ToUpper()</div>
+                    <h3>@context.User.Identity?.Name</h3>
+                    <div class="money-badge-mobile">
+                        Saldo: <span>$ @(UserService.User?.Money.ToString("N2") ?? "0.00")</span>
+                    </div>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+
+        <nav class="mobile-links">
+            <NavLink class="mobile-nav-link" href="/" @onclick="CloseMobileMenu">Inicio</NavLink>
+            <NavLink class="mobile-nav-link" href="/market" @onclick="CloseMobileMenu">Mercado</NavLink>
+            <AuthorizeView>
+                <Authorized>
+                    <NavLink class="mobile-nav-link" href="/collection" @onclick="CloseMobileMenu">Mi Colección</NavLink>
+                    <NavLink class="mobile-nav-link" href="/profile" @onclick="CloseMobileMenu">Perfil</NavLink>
+                    <button class="mobile-nav-link danger" @onclick="HandleLogout">Cerrar Sesión</button>
+                </Authorized>
+                <NotAuthorized>
+                    <NavLink class="mobile-nav-link" href="user/login" @onclick="CloseMobileMenu">Iniciar Sesión</NavLink>
+                    <NavLink class="mobile-nav-link" href="user/register" @onclick="CloseMobileMenu">Registrarse</NavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+        </nav>
+    </div>
+</div>
+
 @code {
     private bool showUserMenu = false;
+    private bool isMobileMenuOpen = false;
 
-    protected override void OnInitialized()
-    {
-        UserService.onChange += StateHasChanged;
-    }
+    protected override void OnInitialized() => UserService.onChange += StateHasChanged;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (firstRender)
-        {
-            await JSRuntime.InvokeVoidAsync("initNavbarScroll");
-        }
+        if (firstRender) await JSRuntime.InvokeVoidAsync("initNavbarScroll");
     }
 
-    public void Dispose()
-    {
-        UserService.onChange -= StateHasChanged;
-    }
+    public void Dispose() => UserService.onChange -= StateHasChanged;
 
     private void ToggleUserMenu() => showUserMenu = !showUserMenu;
     private void CloseMenu() => showUserMenu = false;
+
+    private void ToggleMobileMenu() => isMobileMenuOpen = !isMobileMenuOpen;
+    private void CloseMobileMenu() => isMobileMenuOpen = false;
 
     private async Task HandleLogout()
     {
         // Redirect to login page and clear auth state
         await AuthService.Logout();
+        CloseMobileMenu();
         Navigation.NavigateTo("/user/login", true);
     }
 }

@@ -59,6 +59,7 @@
 @code {
     private List<SetDto> sets;
 
+    // Initializa method
     protected override async Task OnInitializedAsync()
     {
         sets = await PackService.GetAllSets();
