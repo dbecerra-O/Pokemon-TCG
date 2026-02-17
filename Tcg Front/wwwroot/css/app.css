@@ -104,6 +104,32 @@ a.nav-link {
     color: #4b5563;
 }
 
+.poke-input {
+    text-decoration: none !important;
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    background: #fcfcfc;
+    color: #333;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+}
+
+    .poke-input:focus {
+        outline: none;
+        border-color: #333;
+        background: white;
+    }
+
+.poke-validation {
+    text-decoration: none !important;
+    color: #EE1515;
+    font-size: 0.65rem;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
 .nav-link {
     position: relative;
     display: flex;

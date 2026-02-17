@@ -1,0 +1,139 @@
+﻿/* Contenedor interno de los forms */
+.poke-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.poke-header {
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+/* Anillo del logo inspirado en el botón de la Pokébola */
+.logo-ring {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 0.5rem;
+    background: white;
+    border: 4px solid #333;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+}
+
+.poke-logo-img {
+    width: 55%;
+    height: auto;
+}
+
+.poke-title {
+    color: #333;
+    font-weight: 850;
+    font-size: 1.2rem;
+    margin-bottom: 0.1rem;
+}
+
+.poke-subtitle {
+    color: #888;
+    font-size: 0.8rem;
+}
+
+/* Campos de entrada */
+.poke-field {
+    margin-bottom: 0.4rem;
+    text-align: left;
+}
+
+.poke-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: #EE1515; /* Rojo Pokémon */
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+}
+
+.poke-input {
+    width: 100%;
+    padding: 8px 12px;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    background: #fcfcfc;
+    color: #333;
+    font-size: 0.85rem;
+    transition: border-color 0.2s;
+}
+
+    .poke-input:focus {
+        outline: none;
+        border-color: #333;
+        background: white;
+    }
+
+/* Botón de acción con profundidad */
+.btn-poke-action {
+    width: 100%;
+    padding: 10px;
+    background: #EE1515;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #b31010;
+    transition: all 0.1s;
+    margin-top: 0.5rem;
+}
+
+    .btn-poke-action:active {
+        transform: translateY(2px);
+        box-shadow: 0 2px 0 #b31010;
+    }
+
+    .btn-poke-action:disabled {
+        background: #fab1b1;
+        box-shadow: none;
+        cursor: not-allowed;
+    }
+
+/* Alertas y validaciones */
+.poke-alert-error {
+    background: #fff5f5;
+    border: 1px solid #feb2b2;
+    color: #c53030;
+    padding: 6px 10px;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.poke-validation {
+    color: #EE1515;
+    font-size: 0.65rem;
+    margin-top: 4px;
+    font-weight: 500;
+}
+
+.poke-link-footer {
+    text-align: center;
+    margin-top: 0.8rem;
+    font-size: 0.8rem;
+}
+
+.poke-link {
+    color: #EE1515;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+    .poke-link:hover {
+        text-decoration: underline;
+    }

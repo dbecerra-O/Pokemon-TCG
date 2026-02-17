@@ -1,24 +1,25 @@
 ﻿@inherits LayoutComponentBase
-<div class="auth-layout">
 
-    <div class="auth-background">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="grid-overlay"></div>
+<div class="poke-layout">
+    <div class="poke-bg-decoration">
+        <div class="half-red"></div>
+        <div class="center-line"></div>
     </div>
 
     <div class="auth-card-container">
+        <div class="back-navigation-container">
+            <a href="/" class="poke-back-pill">
+                <span class="poke-icon-home"></span>
+                <span class="pill-text">Go Back Home</span>
+            </a>
+        </div>
 
-        <a href="/" class="back-link">
-            ← Volver al inicio
-        </a>
-
-        <div class="glass-form">
+        <main class="poke-glass-container">
             @Body
-        </div>
+        </main>
 
-        <div class="auth-footer">
-            <small>© 2024 TCG Market. Todos los derechos reservados.</small>
-        </div>
+        <footer class="poke-footer">
+            <small>© 2026 TCG Market — Gotta catch 'em all!</small>
+        </footer>
     </div>
 </div>

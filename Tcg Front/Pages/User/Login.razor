@@ -7,74 +7,73 @@
 @inject AuthService AuthService
 @inject NavigationManager Navigation
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-header bg-primary text-white text-center">
-                <h3>Login</h3>
-            </div>
-            <div class="card-body">
-                @* form to handle user login *@
-                <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
-                    <DataAnnotationsValidator /> @* validate form data *@
-
-                    @if (!string.IsNullOrEmpty(errorMessage))
-                    {
-                        <div class="alert alert-danger">@errorMessage</div>
-                    }
-
-                    <div class="mb-3">
-                        <label>Username</label>
-                        <InputText @bind-Value="loginModel.username" class="form-control" />
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Password</label>
-                        <InputPassword Label="password" @bind-Value="loginModel.password" />
-                    </div>
-
-                    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold shadow-sm" disabled="@isLoading">
-                        @if (isLoading)
-                        {
-                            <span role="status" aria-hidden="true">Logging in</span>
-                        }
-                        else
-                        {
-                            <i class="bi bi-person-plus-fill me-2">Login</i>
-                        }
-                    </button>
-                </EditForm>
-            </div>
-            <div class="card-footer text-center">
-                Don't you have an account? <a href="/user/register">Sign up</a>
-            </div>
+<div class="poke-container">
+    <div class="poke-header">
+        <div class="logo-ring">
+            <img src="/Logo.webp" alt="TCG Logo" class="poke-logo-img" />
         </div>
+        <h3 class="poke-title">We chose you!</h3>
+        <p class="poke-subtitle">Log in to access your collection.</p>
+    </div>
+
+    <EditForm Model="loginModel" OnValidSubmit="HandleLogin">
+        <DataAnnotationsValidator />
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="poke-alert-error">
+                <i class="bi bi-exclamation-circle-fill"></i>
+                <span>@errorMessage</span>
+            </div>
+        }
+
+        <div class="poke-field">
+            <label class="poke-label">Trainer Name</label>
+            <InputText @bind-Value="loginModel.username" class="poke-input" placeholder="Ex. AshKetchum" />
+        </div>
+
+        <div class="poke-field">
+            <label class="poke-label">Master Password</label>
+            <InputText type="password" @bind-Value="loginModel.password" class="poke-input" placeholder="••••••••" />
+        </div>
+
+        <button type="submit" class="btn-poke-action" disabled="@isLoading">
+            @if (isLoading)
+            {
+                <span class="spinner-border spinner-border-sm"></span>
+                <span> Joining...</span>
+            }
+            else
+            {
+                <span>Access the PC</span>
+            }
+        </button>
+    </EditForm>
+
+    <div class="poke-link-footer">
+        <p>Are you not a trainer yet? <a href="/user/register" class="poke-link">Register Here</a></p>
     </div>
 </div>
 
 @code {
-    // Login model to bind form data
     private LoginRequest loginModel = new LoginRequest();
-    private string errorMessage = ""; // To hold error messages
-    private bool isLoading = false; // To indicate loading state
+    private string errorMessage = "";
+    private bool isLoading = false;
 
     private async Task HandleLogin()
     {
-        isLoading = true; // Set loading state
-        errorMessage = ""; // Clear previous error message
+        isLoading = true;
+        errorMessage = "";
+        await Task.Delay(800);
 
-        await Task.Delay(500); // Simulate a short delay for better UX
-        // Call AuthService to perform login
         var error = await AuthService.Login(loginModel);
-        // If login is successful, navigate to home page
         if (error == null)
         {
             Navigation.NavigateTo("/", true);
         }
-        // If there's an error, display it
         else
         {
-            errorMessage = error;
+            errorMessage = "Incorrect Credetianls";
             isLoading = false;
         }
     }

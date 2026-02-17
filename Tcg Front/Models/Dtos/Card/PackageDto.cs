@@ -1,10 +1,9 @@
-﻿namespace TcgFront.Models.Dtos
+﻿namespace TcgFront.Models.Dtos.Card
 {
-    public class SetDto
+    public class PackageDto
     {
         public int Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public int Price { get; set; }
         public string ImageUrl { get; set; } = string.Empty;
     }
 }

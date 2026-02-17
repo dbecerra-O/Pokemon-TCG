@@ -1,98 +1,152 @@
-﻿.auth-layout {
+﻿.poke-layout {
     font-family: 'Inter', sans-serif;
     min-height: 100vh;
     width: 100%;
     position: relative;
-    background-color: #050505;
+    background-color: #f7f9fb;
     display: flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
 }
 
-.auth-background {
+.poke-bg-decoration {
     position: absolute;
     inset: 0;
     z-index: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-.blob {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.5;
-    animation: float 10s infinite ease-in-out alternate;
+.half-red {
+    flex: 1;
+    background: linear-gradient(180deg, #ee1515 0%, #ff4d4d 100%);
+    clip-path: ellipse(150% 100% at 50% 0%);
 }
 
-.blob-1 {
-    width: 400px;
-    height: 400px;
-    background: #4f46e5;
-    top: -100px;
-    left: -100px;
-}
-
-.blob-2 {
-    width: 500px;
-    height: 500px;
-    background: #db2777;
-    bottom: -100px;
-    right: -100px;
-}
-
-.grid-overlay {
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
+.center-line {
+    height: 15px;
+    background: #333;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .auth-card-container {
     position: relative;
     z-index: 10;
     width: 100%;
-    max-width: 450px;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+    max-width: 440px;
+    padding: 1.5rem;
 }
 
-.glass-form {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 24px;
-    padding: 2.5rem;
-    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-    color: white;
+.poke-glass-container {
+    background: #ffffff;
+    border: 8px solid #333;
+    border-radius: 40px;
+    padding: 3rem 2rem;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    position: relative;
 }
 
-.back-link {
-    color: rgba(255, 255, 255, 0.6);
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: color 0.2s;
-    align-self: flex-start;
-}
-
-    .back-link:hover {
-        color: white;
+    .poke-glass-container::before {
+        content: '';
+        position: absolute;
+        top: -25px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 50px;
+        background: #333;
+        border-radius: 50%;
+        border: 6px solid #f7f9fb;
+        z-index: 11;
     }
 
-.auth-footer {
-    text-align: center;
-    color: rgba(255, 255, 255, 0.3);
+.back-navigation-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: -15px;
+    position: relative;
+    z-index: 20;
 }
 
-@keyframes float {
+.poke-back-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 20px;
+    background: #333; /* Color carbón para contrastar con el fondo rojo/blanco */
+    color: white;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 3px solid #f7f9fb;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* El círculo rojo pequeño que simula un botón de mando */
+.poke-icon-home {
+    width: 12px;
+    height: 12px;
+    background: #ee1515;
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 5px #ee1515;
+    display: inline-block;
+}
+
+.pill-text {
+    text-decoration: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    display: inline-block;
+    vertical-align: middle;
+    color: #ffffff;
+    transition: color 0.3s ease;
+}
+
+.poke-back-pill:hover {
+    transform: translateY(-3px);
+    background: #ee1515;
+    border-color: #333;
+    box-shadow: 0 8px 20px rgba(238, 21, 21, 0.4);
+}
+
+    .poke-back-pill:hover .poke-icon-home {
+        background: white;
+        box-shadow: 0 0 8px white;
+    }
+
+.poke-back-pill:active {
+    transform: translateY(1px);
+}
+
+@keyframes pillFloat {
     0% {
-        transform: translate(0, 0);
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
     }
 
     100% {
-        transform: translate(30px, 20px);
+        transform: translateY(0);
     }
+}
+
+.poke-back-pill {
+    animation: pillFloat 3s infinite ease-in-out;
+}
+
+.poke-footer {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #636e72;
 }

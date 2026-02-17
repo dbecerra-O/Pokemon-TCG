@@ -11,7 +11,7 @@ namespace Tcg_web.Mappers
             {
                 Id = package.Id,
                 Name = package.Name,
-                ImageUrl = package.ImageUrl
+                ImageUrl = package.ImageUrl,
             };
         }
     }

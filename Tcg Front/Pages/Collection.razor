@@ -37,7 +37,7 @@
 </div>
 
 @code {
-    private List<CollectionDto> cards;
+    private List<CollectionDto> cards = new();
     protected override async Task OnInitializedAsync()
     {
         cards = await CardService.GetUserCollection();
