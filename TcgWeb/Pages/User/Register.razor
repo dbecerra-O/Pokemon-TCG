@@ -1,0 +1,97 @@
+﻿@page "/user/register"
+@layout TcgWeb.Layout.AuthLayout
+@using TcgWeb.Models.Auth
+@using TcgWeb.Models.Requests
+@using TcgWeb.Services
+@using TcgWeb.Components.Common
+@inject AuthService AuthService
+@inject NavigationManager Navigation
+
+<div class="poke-container">
+    <div class="poke-header">
+        <div class="logo-ring">
+            <img src="/Logo.webp" alt="TCG Logo" class="poke-logo-img" />
+        </div>
+        <h3 class="poke-title">New Adventure</h3>
+        <p class="poke-subtitle">Complete your details to get started.</p>
+    </div>
+
+    <EditForm Model="registerModel" OnValidSubmit="HandleRegister">
+        <DataAnnotationsValidator />
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+        <div class="poke-alert-error">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>@errorMessage</span>
+        </div>
+        }
+
+        <div class="poke-grid">
+            <div class="poke-field">
+                <label class="poke-label">Trainer Name</label>
+                <InputText @bind-Value="registerModel.username" class="poke-input" placeholder="Your alias" />
+                <ValidationMessage For="@(() => registerModel.username)" class="poke-validation" />
+            </div>
+
+            <div class="poke-field">
+                <label class="poke-label">Email</label>
+                <InputText @bind-Value="registerModel.email" class="poke-input" placeholder="trainer@league.com" />
+                <ValidationMessage For="@(() => registerModel.email)" class="poke-validation" />
+            </div>
+
+            <div class="poke-field">
+                <label class="poke-label">Password</label>
+                <InputText type="password" @bind-Value="registerModel.password" class="poke-input" placeholder="Minimum 8 characters" />
+                <ValidationMessage For="@(() => registerModel.password)" class="poke-validation" />
+            </div>
+
+            <div class="poke-field">
+                <label class="poke-label">Confirm Password</label>
+                <InputText type="password" @bind-Value="registerModel.confirmPassword" class="poke-input" placeholder="Repeat the password" />
+                <ValidationMessage For="@(() => registerModel.confirmPassword)" class="poke-validation" />
+            </div>
+        </div>
+
+        <button type="submit" class="btn-poke-action" disabled="@isLoading">
+            @if (isLoading)
+            {
+            <span class="spinner-border spinner-border-sm"></span>
+            <span> Registering...</span>
+            }
+            else
+            {
+            <span>Start your journey!</span>
+            }
+        </button>
+    </EditForm>
+
+    <div class="poke-link-footer">
+        <p>Do you already have an account? <a href="/user/login" class="poke-link">Log In</a></p>
+    </div>
+</div>
+
+@code {
+    private RegisterRequest registerModel = new RegisterRequest();
+    private string errorMessage = "";
+    private bool isLoading = false;
+
+    private async Task HandleRegister()
+    {
+        isLoading = true;
+        errorMessage = "";
+        await Task.Delay(800);
+
+        var error = await AuthService.Register(registerModel);
+
+        if (error == null)
+        {
+            Navigation.NavigateTo("/", true);
+        }
+        else
+        {
+            errorMessage = error;
+            isLoading = false;
+        }
+    }
+}

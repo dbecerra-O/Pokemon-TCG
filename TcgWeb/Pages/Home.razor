@@ -1,0 +1,90 @@
+﻿@page "/"
+@layout TcgWeb.Layout.MainLayout
+@using TcgWeb.Models.Dtos
+@using TcgWeb.Services
+@inject PackService PackService
+@inject NavigationManager Navigation
+
+<PageTitle>Mercado TCG</PageTitle>
+
+<div class="home-container">
+
+    <div class="hero-section">
+        <div class="hero-content">
+            <img src="/Logo.webp" alt="Pokeball Logo" class="hero-logo floating-logo" />
+
+            <div class="text-group">
+                <h1>Gotta catch 'em all!</h1>
+                <p>Discover a lot of cards and complete your collection</p>
+                <button class="btn-hero" onclick="document.querySelector('.content-section').scrollIntoView({behavior: 'smooth'})">
+                    See Packs
+                </button>
+            </div>
+        </div>
+
+        <div class="hero-fade-bottom"></div>
+    </div>
+
+    <div class="content-section">
+        <div class="section-header">
+            <h2 class="section-title">Market Popular sets</h2>
+        </div>
+
+        @if (sets == null)
+        {
+            <div class="loading-state">
+                <img src="/Logo.webp" class="spinner-logo" alt="Cargando..." />
+                <p>Buscando sets...</p>
+            </div>
+        }
+        else
+        {
+            <div class="sets-grid">
+                @foreach (var set in sets)
+                {
+                    <div class="set-card" @onclick="() => IrASobres(set.Id, set.Name)">
+                        <div class="image-wrapper">
+                            <img src="@set.ImageUrl" alt="@set.Name" />
+                            <span class="badge">NUEVO</span>
+                        </div>
+
+                        <div class="card-content">
+                            <h5>@set.Name</h5>
+                            <div class="card-footer">
+                                <span class="price-tag">$@set.Price</span>
+                                <button class="btn-buy">Ver Sobres →</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+
+@code {
+    private List<SetDto> sets = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            sets = await PackService.GetAllSets();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+
+    private void IrASobres(int setId, string setName)
+    {
+        string encodedName = Uri.EscapeDataString(setName);
+        Navigation.NavigateTo($"/open-packs/{setId}/{encodedName}");
+    }
+
+    private async Task ScrollToContent()
+    {
+        await InvokeAsync(() =>{});
+    }
+}

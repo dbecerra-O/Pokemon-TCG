@@ -1,0 +1,75 @@
+﻿@page "/collection"
+@using TcgWeb.Models.Dtos
+@using TcgWeb.Models.Dtos.Card
+@using TcgWeb.Services
+@inject CardService CardService
+@layout TcgWeb.Layout.MainLayout
+
+<PageTitle>Collection</PageTitle>
+
+<div class="collection-page">
+    <div class="collection-header">
+        <h1>Mi Colección</h1>
+        <p>Explora todas las cartas que has obtenido.</p>
+    </div>
+
+    @if (cards == null)
+    {
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <span>Cargando colección...</span>
+        </div>
+    }
+    else if (!cards.Any())
+    {
+        <div class="empty-state">
+            <p>Aún no tienes cartas en tu colección.</p>
+            <a href="/open-packs" class="btn-poke-big">¡Abre tu primer sobre!</a>
+        </div>
+    }
+    else
+    {
+        <div class="collection-grid">
+            @foreach (var item in cards)
+            {
+                <div class="tcg-card-item">
+                    <div class="card-image-wrapper">
+                        <img src="@item.Card.ImageUrl" alt="@item.Card.Name" loading="lazy" />
+
+                        <div class="quantity-badge">
+                            x@(item.Quantity)
+                        </div>
+                    </div>
+
+                    <div class="card-info">
+                        <h2 class="card-name" title="@item.Card.Name">@item.Card.Name</h2>
+
+                        <div class="card-tags">
+                            @if (item.Card.Rarity != null)
+                            {
+                                <span class="badge-tag rarity @item.Card.Rarity.Name.ToLower()">
+                                    @item.Card.Rarity.Name
+                                </span>
+                            }
+                            @if (item.Card.EnergyType != null)
+                            {
+                                <span class="badge-tag energy">
+                                    @item.Card.EnergyType.Name
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    private List<CollectionDto> cards = new();
+    
+    protected override async Task OnInitializedAsync()
+    {
+        cards = await CardService.GetUserCollection();
+    }
+}

@@ -1,0 +1,210 @@
+﻿@page "/open-packs/{SetId:int}/{SetName}"
+@layout TcgWeb.Layout.MainLayout  
+@using TcgWeb.Models.Dtos
+@using TcgWeb.Models.Dtos.Card
+@using TcgWeb.Services
+@inject PackService PackService
+@inject NavigationManager Navigation
+@inject UserService UserService
+
+<PageTitle>Abrir Sobres - @DecodeName(SetName)</PageTitle>
+
+<div class="page-wrapper">
+
+    @if (openedCards != null)
+    {
+        /* --- VISTA DE CARTAS REVELADAS --- */
+        <div class="reveal-container">
+            <h2>¡Nuevas Cartas Obtenidas!</h2>
+
+            <div class="cards-grid-reveal">
+                @foreach (var card in openedCards)
+                {
+                    <div class="card-reveal-item">
+                        <div class="card-inner">
+                            <div class="card-front">
+                                <img src="@card.ImageUrl" alt="@card.Name" />
+                                <div class="rarity-badge @card.Rarity?.Name.ToLower()">@card.Rarity?.Name</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <button class="btn-poke-big" @onclick="ResetView">Abrir otro sobre</button>
+        </div>
+    }
+    else if (isOpening)
+    {
+        /* --- ANIMACIÓN DE APERTURA --- */
+        <div class="opening-animation-container">
+            <div class="pack-shaking">
+                <img src="@(packages.FirstOrDefault(p => p.Id == selectedPackId)?.ImageUrl)" class="pack-img-anim" />
+                <div class="light-burst"></div>
+            </div>
+            <p class="opening-text">Opening Pack...</p>
+        </div>
+    }
+    else
+    {
+        @if (isLoading)
+        {
+            <div class="loading-container">
+                <div class="spinner"></div>
+                <p>Loading Packages...</p>
+            </div>
+        }
+        else if (packages == null || !packages.Any())
+        {
+            <p class="error-msg">Packages not found</p>
+        }
+        else
+        {
+            <div class="packs-display-area">
+                <div class="packs-container @(selectedPackId != null ? "has-selection" : "")">
+                    @for (int i = 0; i < packages.Count; i++)
+                    {
+                        var pack = packages[i];
+                        var isSelected = selectedPackId == pack.Id;
+                        var rotation = (i - (packages.Count - 1) / 2.0) * 6;
+
+                        <div class="pack-wrapper @(isSelected ? "is-selected" : "")"
+                             style="--r:@(rotation.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture));">
+
+                            <div class="real-pack" @onclick="() => SelectPack(pack.Id)">
+                                <div class="foil-crimp top"></div>
+                                <img src="@pack.ImageUrl" alt="@pack.Name" />
+                                <div class="foil-crimp bottom"></div>
+                                <div class="reflection"></div>
+
+                                @if (isSelected)
+                                {
+                                    <div class="pack-overlay-actions">
+                                        <div class="price-tag-overlay">$@setPrice</div>
+
+                                        @if (UserService.User != null && UserService.User.Money < setPrice)
+                                        {
+                                            <div class="error-balance">Insufficient balance ($@UserService.User.Money)</div>
+                                            <button class="btn-poke-small cancel" @onclick:stopPropagation @onclick="DeselectPack">
+                                                BACK
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn-poke-small buy" @onclick:stopPropagation @onclick="() => ConfirmPurchase(pack.Id)">
+                                                BUY
+                                            </button>
+                                            <button class="btn-poke-small cancel" @onclick:stopPropagation @onclick="DeselectPack">
+                                                BACK
+                                            </button>
+                                        }
+                                    </div>
+                                }
+                            </div>
+
+                            @if (selectedPackId == null)
+                            {
+                                <div class="pack-info">
+                                    <span class="pack-name">@pack.Name</span>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="info-container">
+                <div class="info-text">
+                    All packages contain the same content
+                </div>
+            </div>
+        }
+    }
+    
+</div>
+
+@code {
+    [Parameter] public int SetId { get; set; }
+    [Parameter] public string SetName { get; set; } = string.Empty;
+
+    private List<PackageDto> packages = new();
+    private List<CardDto> openedCards = null;
+
+    private int? selectedPackId = null;
+    private bool isLoading = true;
+    private bool isOpening = false;
+    private decimal setPrice = 0;
+
+    private string DecodeName(string encodedName) => Uri.UnescapeDataString(encodedName);
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            // Ahora esperamos tu nuevo DTO (GetPackagesDto)
+            var packDetails = await PackService.GetPackDetails(SetId);
+
+            if (packDetails != null)
+            {
+                // Asignamos el precio y los paquetes a nuestras variables locales
+                setPrice = packDetails.SetPrice;
+                packages = packDetails.Packages ?? new List<PackageDto>();
+            }
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void SelectPack(int packId)
+    {
+        if (selectedPackId == packId) return;
+        selectedPackId = packId;
+    }
+
+    private void DeselectPack()
+    {
+        selectedPackId = null;
+    }
+
+    private async Task ConfirmPurchase(int packId)
+    {
+
+        // 1. Iniciamos animación visual
+        isOpening = true;
+        StateHasChanged(); // Forzamos render para ocultar la galería y mostrar animación
+
+        // 2. Simulamos un pequeño delay dramático (opcional, pero se ve bien)
+        await Task.Delay(1500);
+
+        // 3. Llamamos a la API real
+        var result = await PackService.OpenPack(SetId);
+
+        if (result.Success)
+        {
+            // 4. Actualizamos el saldo del usuario globalmente
+            UserService.User.Money = result.NewBalance;
+            UserService.NotifyStateChanged();
+
+            // 5. Mostramos las cartas
+            openedCards = result.Cards;
+            isOpening = false;
+        }
+        else
+        {
+            // Manejo de error (ej: saldo insuficiente)
+            isOpening = false;
+            // Aquí podrías mostrar un toast o alerta
+            Console.WriteLine("Error: " + result.Message);
+            DeselectPack();
+        }
+    }
+
+    private void ResetView()
+    {
+        openedCards = null;
+        selectedPackId = null;
+        isOpening = false;
+    }
+}

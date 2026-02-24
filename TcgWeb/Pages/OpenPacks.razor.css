@@ -1,0 +1,664 @@
+﻿/* =========================================
+   1. MAIN LAYOUT
+========================================= */
+.page-wrapper {
+    height: calc(100vh - 60px);
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    background-image: radial-gradient(circle at 50% 0%, #ffffff 0%, #f3f4f6 100%);
+    color: #111827;
+}
+
+/* =========================================
+   2. PACKAGES AND CONTAINERS AREA
+========================================= */
+.packs-display-area {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: 40px;
+}
+
+.packs-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    perspective: 1000px;
+}
+
+.pack-wrapper {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 -40px;
+    transform-style: preserve-3d;
+    transform: rotate(calc(var(--r) * 1deg)) translateY(0);
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1), z-index 0s;
+    z-index: 1;
+}
+
+/* =========================================
+   3. PACKAGE SELECTED DESIGN
+========================================= */
+.real-pack {
+    position: relative;
+    width: 240px;
+    height: 440px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+    .real-pack img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.95);
+        transition: filter 0.4s ease;
+    }
+
+.foil-crimp {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 12px;
+    background: repeating-linear-gradient(90deg, transparent, rgba(255,255,255,0.3) 2px, transparent 4px);
+    z-index: 5;
+    opacity: 0.5;
+}
+
+.top {
+    top: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.bottom {
+    bottom: 0;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.reflection {
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.4) 50%, transparent 60%);
+    transform: skewX(-20deg);
+    pointer-events: none;
+}
+
+/* =========================================
+   4. INTERACTIONS AND HOVER
+========================================= */
+.pack-wrapper:hover {
+    z-index: 100;
+    transform: translateY(-40px) scale(1.1) rotate(0deg) !important;
+}
+
+    .pack-wrapper:hover .real-pack {
+        box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+        border-color: rgba(0,0,0,0.2);
+    }
+
+    .pack-wrapper:hover img {
+        filter: brightness(1.1) contrast(1.1);
+    }
+
+    .pack-wrapper:hover .reflection {
+        left: 150%;
+        transition: 0.6s ease-in-out;
+    }
+
+/* Efecto Focus: Oscurecer los demás */
+.packs-container:hover .pack-wrapper:not(:hover) {
+    filter: blur(2px) grayscale(0.5);
+    opacity: 0.6;
+}
+
+/* =========================================
+   5. SELECTION LOGIC (CLICKS)
+========================================= */
+.has-selection .pack-wrapper {
+    pointer-events: none;
+}
+
+.pack-wrapper.is-selected {
+    z-index: 500 !important;
+    transform: translateY(-60px) scale(1.15) rotate(0deg) !important;
+    pointer-events: auto;
+    filter: none !important;
+    opacity: 1 !important;
+}
+
+/* Estilos combinados para sobres no seleccionados */
+.has-selection .pack-wrapper:not(.is-selected) {
+    filter: blur(4px) grayscale(0.6) !important;
+    opacity: 0.4 !important;
+    transform: rotate(calc(var(--r) * 1deg)) translateY(0) scale(0.95) !important;
+    transition: all 0.5s ease;
+}
+
+/* =========================================
+   6. INFORMATION AND LABELS
+========================================= */
+.pack-info {
+    position: absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: 0.3s;
+    justify-content: center;
+}
+
+.packs-container:not(.has-selection) .pack-wrapper:hover .pack-info {
+    opacity: 1;
+    transform: translateX(-50%) translateY(-10px);
+}
+
+.pack-name {
+    background: #111;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    white-space: normal;
+    display: inline-block;
+    line-height: 1.4;
+    text-align: justify;
+}
+
+.info-container {
+    position: relative;
+    max-width: 360px;
+    padding: 14px 18px 14px 46px;
+    background: rgba(200, 196, 190, 0.38);
+    border: 1px solid rgba(160, 155, 145, 0.35);
+    border-radius: 6px;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.4);
+    opacity: 0.82;
+    filter: saturate(0.7);
+}
+
+    .info-container::before {
+        content: 'ⓘ';
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 15px;
+        color: #8a8178;
+        opacity: 0.75;
+    }
+
+.info-text {
+    font-size: 11.5px;
+    line-height: 1.6;
+    color: #857d74;
+}
+
+/* =========================================
+   7. ACTIONS AND BUTTONS OVERLAY
+========================================= */
+.pack-overlay-actions {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    z-index: 10;
+    border-radius: 12px;
+    animation: fadeIn 0.4s ease forwards;
+}
+
+.price-tag-overlay {
+    background: linear-gradient(135deg, rgba(20, 20, 20, 0.9) 0%, rgba(40, 40, 40, 0.9) 100%);
+    border: 2px solid #ce2a1f;
+    padding: 8px 24px;
+    border-radius: 50px;
+    box-shadow: 0 0 15px rgba(251, 191, 36, 0.3), inset 0 0 10px rgba(251, 191, 36, 0.1);
+    margin-bottom: 15px;
+    animation: floatUpDown 5s ease-in-out infinite;
+    color: #ce2a1f;
+    font-size: 1.5rem;
+    font-weight: 900;
+    font-family: 'Montserrat', sans-serif;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.error-balance {
+    background: rgba(20, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    border-left: 4px solid #ef4444;
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+    animation: shakeError 0.4s cubic-bezier(.36,.07,.19,.97) both;
+    color: #fca5a5;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-align: center;
+    letter-spacing: 0.5px;
+}
+
+.btn-poke-small {
+    width: 110px;
+    padding: 10px 0;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+    .btn-poke-small.buy {
+        background: #ee1515;
+        color: white;
+        box-shadow: 0 4px 0 #b31010;
+    }
+
+    .btn-poke-small.cancel {
+        background: #333;
+        color: white;
+        box-shadow: 0 4px 0 #000;
+    }
+
+    .btn-poke-small:hover {
+        transform: translateY(-2px);
+        filter: brightness(1.1);
+    }
+
+    .btn-poke-small:active {
+        transform: translateY(1px);
+        box-shadow: none;
+    }
+
+.btn-poke-big {
+    background: #e53e3e;
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0 10px 20px rgba(229, 62, 62, 0.4);
+    transition: transform 0.2s;
+}
+
+    .btn-poke-big:hover {
+        transform: scale(1.05);
+        background: #c53030;
+    }
+
+/* =========================================
+   8. OPENING ANIMATION
+========================================= */
+.opening-animation-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    animation: fadeIn 0.5s;
+}
+
+.pack-shaking {
+    position: relative;
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) infinite both;
+}
+
+.pack-img-anim {
+    width: 240px;
+    height: 440px;
+    border-radius: 10px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.light-burst {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background: white;
+    box-shadow: 0 0 100px 50px white;
+    opacity: 0;
+    animation: burst 1.5s ease-in forwards;
+    animation-delay: 1s;
+}
+
+.opening-text {
+    margin-top: 2rem;
+    font-size: 1.5rem;
+    color: white;
+    font-weight: 300;
+    letter-spacing: 2px;
+}
+
+/* =========================================
+   9. REVELATION OF CARDS
+========================================= */
+.reveal-container {
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 20px;
+    animation: slideUpFade 0.8s ease;
+}
+
+    .reveal-container h2 {
+        color: #fff;
+        margin-bottom: 2rem;
+        font-size: 2rem;
+        text-shadow: 0 0 10px rgba(255,255,255,0.3);
+    }
+
+.cards-grid-reveal {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.card-reveal-item {
+    width: 200px;
+    aspect-ratio: 2.5/3.5;
+    animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) backwards;
+}
+
+    .card-reveal-item:nth-child(1) {
+        animation-delay: 0.1s;
+    }
+
+    .card-reveal-item:nth-child(2) {
+        animation-delay: 0.2s;
+    }
+
+    .card-reveal-item:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+
+    .card-reveal-item:nth-child(4) {
+        animation-delay: 0.4s;
+    }
+
+    .card-reveal-item:nth-child(5) {
+        animation-delay: 0.5s;
+    }
+
+    .card-reveal-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        transition: transform 0.3s;
+    }
+
+/* =========================================
+   10. RESPONSIVE
+========================================= */
+@media (max-width: 768px) {
+    .real-pack {
+        width: 160px;
+        height: 290px;
+    }
+
+    .pack-wrapper {
+        margin: 0 -30px;
+    }
+}
+
+/* =========================================
+   11. KEYFRAMES
+========================================= */
+@keyframes shake {
+    10%, 90% {
+        transform: translate3d(-2px, 0, 0) rotate(-1deg);
+    }
+
+    20%, 80% {
+        transform: translate3d(3px, 0, 0) rotate(2deg);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-5px, 0, 0) rotate(-2deg);
+    }
+
+    40%, 60% {
+        transform: translate3d(5px, 0, 0) rotate(2deg);
+    }
+}
+
+@keyframes burst {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.1);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(20);
+    }
+}
+
+@keyframes popIn {
+    from {
+        opacity: 0;
+        transform: scale(0.5) translateY(50px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes slideUpFade {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes floatUpDown {
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+@keyframes shakeError {
+    10%, 90% {
+        transform: translate3d(-1px, 0, 0);
+    }
+
+    20%, 80% {
+        transform: translate3d(2px, 0, 0);
+    }
+
+    30%, 50%, 70% {
+        transform: translate3d(-4px, 0, 0);
+    }
+
+    40%, 60% {
+        transform: translate3d(4px, 0, 0);
+    }
+}
+
+/* =========================================
+   12. PANTALLA DE CARGA (LOADING)
+========================================= */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    gap: 15px;
+    color: #4b5563;
+    font-weight: 600;
+    animation: fadeIn 0.3s ease;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    /* Color rojo vibrante que hace match con tus botones */
+    border-left-color: #e53e3e;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* =========================================
+   13. MENSAJE DE ERROR GLOBAL
+========================================= */
+.error-msg {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 15px 25px;
+    border-radius: 8px;
+    border-left: 5px solid #ef4444;
+    font-weight: 600;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    margin-top: 20px;
+    animation: popIn 0.3s ease-out;
+}
+
+/* =========================================
+   14. ESTRUCTURA INTERNA DE LAS CARTAS
+========================================= */
+.card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    /* Preparado para un futuro efecto 3D (flip) si decides agregar un reverso (.card-back) */
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+}
+
+.card-front {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    overflow: hidden; /* Evita que la imagen se salga de los bordes redondeados */
+    background-color: #1a1a1a; /* Fondo oscuro mientras carga la imagen */
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1); /* Borde sutil interno */
+}
+
+/* =========================================
+   15. ETIQUETAS DE RAREZA (BADGES)
+========================================= */
+.rarity-badge {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.65rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: white;
+    background: rgba(17, 24, 39, 0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+    z-index: 20;
+    white-space: nowrap;
+}
+    .rarity-badge.common {
+        border-bottom: 2px solid #9ca3af; /* Gris */
+    }
+
+    .rarity-badge.uncommon {
+        border-bottom: 2px solid #34d399; /* Verde */
+    }
+
+    .rarity-badge.rare {
+        border-bottom: 2px solid #60a5fa; /* Azul */
+    }
+
+    .rarity-badge.epic,
+    .rarity-badge.ultra-rare {
+        border-bottom: 2px solid #a78bfa; /* Morado */
+        background: rgba(76, 29, 149, 0.9);
+    }
+
+    .rarity-badge.legendary,
+    .rarity-badge.mythic,
+    .rarity-badge.secret {
+        background: linear-gradient(135deg, #b45309, #991b1b);
+        border: 1px solid #f59e0b;
+        box-shadow: 0 0 12px rgba(245, 158, 11, 0.4);
+        text-shadow: 0 1px 2px rgba(0,0,0,0.8);
+    }

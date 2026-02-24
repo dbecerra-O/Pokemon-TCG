@@ -1,0 +1,22 @@
+﻿@inherits LayoutComponentBase
+@inject TcgWeb.Services.UserService UserService
+
+<div class="main-layout">
+    <NavBar />
+    <main class="content-wrapper">
+        @Body
+    </main>
+</div>
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await UserService.FetchProfile();
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("Usuario visitante (no logueado)");
+        }
+    }
+}
