@@ -1,6 +1,7 @@
 ﻿using TcgApi.Data;
 using TcgApi.Dto;
 using TcgApi.Mappers;
+using TcgApi.Models;
 using TcgApi.Repository.Interfaces;
 using TcgApi.Services.Interfaces;
 
@@ -62,7 +63,7 @@ namespace TcgApi.Services
                 }
 
                 // Add new cards to user's collection
-                await _collectionRepository.AddCards(user.Username, newCards);
+                await AddCardsToCollection(user.Username, newCards);
 
                 // Save changes and commit the transaction
                 await _dataContext.SaveChangesAsync();
@@ -106,6 +107,47 @@ namespace TcgApi.Services
                 SetPrice = setInfo.Price,
                 Packages = packages.Select(c => c.ToPackageDto()).ToList()
             };
+        }
+
+        public async Task AddCardsToCollection(string username, List<Card> newCards)
+        {
+            var user = await _collectionRepository.GetUserWithCollection(username);
+
+            if (user == null)
+                throw new KeyNotFoundException($"{username} not found");
+
+            var groupedCards = newCards.GroupBy(c => c.Id).ToList();
+
+            foreach(var group in groupedCards)
+            {
+                var cardId = group.Key;
+                var quantityToAdd = group.Count();
+                var cardReference = group.First();
+
+                var collectionEntry = user.Collections.FirstOrDefault(c => c.Card != null && c.Card.Id == cardId);
+
+                if (collectionEntry != null)
+                {
+                    collectionEntry.Quantity += quantityToAdd;
+                    collectionEntry.Updated_at = DateTime.UtcNow;
+                }
+                else
+                {
+                    var newEntry = new Collection
+                    {
+                        User = user,
+                        Card = cardReference,
+                        Quantity = quantityToAdd,
+                        Created_at = DateTime.UtcNow,
+                        Updated_at = DateTime.UtcNow
+                    };
+
+                    await _dataContext.Collections.AddAsync(newEntry);
+                    user.Collections.Add(newEntry);
+                }
+            }
+
+            await _dataContext.SaveChangesAsync();
         }
     }
 }

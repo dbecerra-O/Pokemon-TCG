@@ -3,73 +3,280 @@
 @using TcgWeb.Models.Dtos.Card
 @using TcgWeb.Services
 @inject CardService CardService
+@inject NavigationManager Navigation
 @layout TcgWeb.Layout.MainLayout
 
 <PageTitle>Collection</PageTitle>
 
-<div class="collection-page">
-    <div class="collection-header">
-        <h1>Mi Colección</h1>
-        <p>Explora todas las cartas que has obtenido.</p>
-    </div>
+<div class="collection-layout-wrapper">
+    <div class="collection-container">
 
-    @if (cards == null)
-    {
-        <div class="loading-container">
-            <div class="spinner"></div>
-            <span>Cargando colección...</span>
+        <div class="collection-header-solid">
+            <h1>COLLECTION</h1>
+            <div class="header-accent-line"></div>
         </div>
-    }
-    else if (!cards.Any())
-    {
-        <div class="empty-state">
-            <p>Aún no tienes cartas en tu colección.</p>
-            <a href="/open-packs" class="btn-poke-big">¡Abre tu primer sobre!</a>
-        </div>
-    }
-    else
-    {
-        <div class="collection-grid">
-            @foreach (var item in cards)
-            {
-                <div class="tcg-card-item">
-                    <div class="card-image-wrapper">
-                        <img src="@item.Card.ImageUrl" alt="@item.Card.Name" loading="lazy" />
 
-                        <div class="quantity-badge">
-                            x@(item.Quantity)
-                        </div>
+        @if (isLoading)
+        {
+            <div class="loading-state">
+                <div class="spinner-solid"></div>
+                <span>Loading...</span>
+            </div>
+        }
+        else if (unauthorizedError)
+        {
+            <div class="message-state">
+                <p>Session expired or unauthorized.</p>
+                <button class="btn-action-primary" @onclick="GoToLogin">Login</button>
+            </div>
+        }
+        else if (!cards.Any())
+        {
+            <div class="message-state">
+                <p>You don’t have any cards in your collection yet.</p>
+                <a href="/open-packs" class="btn-action-primary">Open Packs</a>
+            </div>
+        }
+        else
+        {
+            <div class="controls-panel">
+                <div class="filters-group">
+                    <div class="custom-select-wrapper">
+                        <select class="custom-filter-select" value="@selectedEnergy" @onchange="OnEnergyChanged">
+                            <option value="">Energy</option>
+                            @foreach (var energy in availableEnergies)
+                            {
+                                <option value="@energy">@energy</option>
+                            }
+                        </select>
                     </div>
 
-                    <div class="card-info">
-                        <h2 class="card-name" title="@item.Card.Name">@item.Card.Name</h2>
-
-                        <div class="card-tags">
-                            @if (item.Card.Rarity != null)
+                    <div class="custom-select-wrapper">
+                        <select class="custom-filter-select" value="@selectedRarity" @onchange="OnRarityChanged">
+                            <option value="">Rarity</option>
+                            @foreach (var rarity in availableRarities)
                             {
-                                <span class="badge-tag rarity @item.Card.Rarity.Name.ToLower()">
-                                    @item.Card.Rarity.Name
-                                </span>
+                                <option value="@rarity">@rarity</option>
                             }
-                            @if (item.Card.EnergyType != null)
-                            {
-                                <span class="badge-tag energy">
-                                    @item.Card.EnergyType.Name
-                                </span>
-                            }
-                        </div>
+                        </select>
                     </div>
                 </div>
-            }
-        </div>
-    }
+
+                <div class="actions-group">
+                    <button class="btn-sell-global">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="icon-svg-money">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Sell Cards
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="collection-grid-solid">
+                @foreach (var item in filteredCards)
+                {
+                    <div class="card-box" @onclick="() => OpenCardModal(item)">
+                        <div class="card-image-wrapper">
+                            <img src="@item.Card.ImageUrl" alt="@item.Card.Name" loading="lazy" />
+                        </div>
+
+                        <div class="card-footer">
+                            <div class="footer-rarity">
+                                @if (item.Card.Rarity != null && !string.IsNullOrEmpty(item.Card.Rarity.ImageUrl))
+                                {
+                                    <img src="@item.Card.Rarity.ImageUrl" class="rarity-mini-icon" alt="@item.Card.Rarity.Name" title="@item.Card.Rarity.Name" />
+                                }
+                                else if (item.Card.Rarity != null)
+                                {
+                                    <span class="rarity-text">@item.Card.Rarity.Name</span>
+                                }
+                            </div>
+
+                            <div class="footer-details">
+                                <span class="quantity-text">x@(item.Quantity)</span>
+                                <button class="btn-sell-icon" title="Vender carta" @onclick="() => OpenSellModal(item)" @onclick:stopPropagation="true">
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="icon-svg-sell">
+                                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.11-1.36-3.28-3.24h2.53c.12.72.77 1.28 1.79 1.28 1.42 0 2.01-.75 2.01-1.55 0-1.14-1.09-1.44-2.85-1.92-2.19-.58-3.41-1.67-3.41-3.32 0-1.57 1.15-2.73 2.88-3.1V4h2.67v1.94c1.44.3 2.65 1.17 2.87 2.81h-2.47c-.17-.67-.78-1.15-1.74-1.15-1.03 0-1.72.58-1.72 1.39 0 1.05.99 1.34 2.62 1.76 2.39.62 3.64 1.71 3.64 3.48 0 1.78-1.29 2.92-3.04 3.26z" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
 </div>
+
+@if (isCardModalOpen && selectedCard != null)
+{
+    <div class="modal-overlay-solid" @onclick="CloseCardModal">
+        <div class="modal-content-card" @onclick:stopPropagation="true">
+            <button class="modal-close-svg" @onclick="CloseCardModal">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+            </button>
+
+            <div class="modal-body-card">
+                <img src="@selectedCard.Card.ImageUrl" alt="@selectedCard.Card.Name" class="modal-card-img-solid" />
+                <div class="modal-info-solid">
+                    <h2>@selectedCard.Card.Name</h2>
+                    <div class="modal-tags">
+                        <span class="tag tag-qty">Owned: @selectedCard.Quantity</span>
+                        @if (selectedCard.Card.Rarity != null)
+                        {
+                            <span class="tag tag-rarity">@selectedCard.Card.Rarity.Name</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (isSellModalOpen && cardToSell != null)
+{
+    <div class="modal-overlay-solid" @onclick="CloseSellModal">
+        <div class="modal-content-sell" @onclick:stopPropagation="true">
+            <div class="modal-header-sell">
+                <h3>Confirm Sale</h3>
+                <button class="modal-close-svg-small" @onclick="CloseSellModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body-sell">
+                <img src="@cardToSell.Card.ImageUrl" alt="@cardToSell.Card.Name" class="sell-preview-img-solid" />
+                <p>How many copies of <strong>@cardToSell.Card.Name</strong> would you like to sell?</p>
+
+                <div class="quantity-selector-container">
+                    <label for="sellQty" class="qty-label">Quantity:</label>
+                    <input type="number" id="sellQty" class="sell-quantity-input" @bind="sellQuantity" min="1" max="@cardToSell.Quantity" />
+                    <span class="max-qty-text">/ @cardToSell.Quantity</span>
+                </div>
+
+                <p class="sell-warning">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer-sell">
+                <button class="btn-cancel-solid" @onclick="CloseSellModal">Cancel</button>
+                <button class="btn-confirm-solid" @onclick="ConfirmSell">Yes, Sell</button>
+            </div>
+        </div>
+    </div>
+}
 
 @code {
     private List<CollectionDto> cards = new();
-    
+    private List<CollectionDto> filteredCards = new();
+
+    private bool isLoading = true;
+    private bool unauthorizedError = false;
+
+    private string selectedEnergy = "";
+    private string selectedRarity = "";
+    private List<string> availableEnergies = new();
+    private List<string> availableRarities = new();
+
+    private bool isCardModalOpen = false;
+    private CollectionDto? selectedCard;
+
+    private bool isSellModalOpen = false;
+    private CollectionDto? cardToSell;
+    private int sellQuantity = 1;
+
     protected override async Task OnInitializedAsync()
     {
-        cards = await CardService.GetUserCollection();
+        try
+        {
+            isLoading = true;
+            cards = await CardService.GetUserCollection();
+            filteredCards = cards;
+
+            availableEnergies = cards.Where(c => c.Card.EnergyType != null)
+                                     .Select(c => c.Card.EnergyType.Name)
+                                     .Distinct()
+                                     .ToList();
+
+            availableRarities = cards.Where(c => c.Card.Rarity != null)
+                                     .Select(c => c.Card.Rarity.Name)
+                                     .Distinct()
+                                     .ToList();
+        }
+        catch (HttpRequestException ex) when (ex.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+        {
+            unauthorizedError = true;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void OnEnergyChanged(ChangeEventArgs e)
+    {
+        selectedEnergy = e.Value?.ToString() ?? "";
+        ApplyFilters();
+    }
+
+    private void OnRarityChanged(ChangeEventArgs e)
+    {
+        selectedRarity = e.Value?.ToString() ?? "";
+        ApplyFilters();
+    }
+
+    private void ApplyFilters()
+    {
+        filteredCards = cards.Where(c =>
+            (string.IsNullOrEmpty(selectedEnergy) || (c.Card.EnergyType != null && c.Card.EnergyType.Name == selectedEnergy)) &&
+            (string.IsNullOrEmpty(selectedRarity) || (c.Card.Rarity != null && c.Card.Rarity.Name == selectedRarity))
+        ).ToList();
+    }
+
+    private void OpenCardModal(CollectionDto card)
+    {
+        selectedCard = card;
+        isCardModalOpen = true;
+    }
+
+    private void CloseCardModal()
+    {
+        isCardModalOpen = false;
+        selectedCard = null;
+    }
+
+    private void OpenSellModal(CollectionDto card)
+    {
+        cardToSell = card;
+        sellQuantity = 1;
+        isSellModalOpen = true;
+    }
+
+    private void CloseSellModal()
+    {
+        isSellModalOpen = false;
+        cardToSell = null;
+    }
+
+    private async Task ConfirmSell()
+    {
+        if (cardToSell != null)
+        {
+            if (sellQuantity < 1) sellQuantity = 1;
+            if (sellQuantity > cardToSell.Quantity) sellQuantity = cardToSell.Quantity;
+
+            cardToSell.Quantity -= sellQuantity;
+            if (cardToSell.Quantity <= 0)
+            {
+                cards.Remove(cardToSell);
+                ApplyFilters();
+            }
+        }
+        CloseSellModal();
+    }
+
+    private void GoToLogin()
+    {
+        Navigation.NavigateTo("/login");
     }
 }

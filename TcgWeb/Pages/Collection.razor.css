@@ -1,193 +1,560 @@
 ﻿/* =========================================
-   1. CONTENEDOR PRINCIPAL
+   1. BASE WRAPPER & VARIABLES
 ========================================= */
-.collection-page {
-    padding: 2rem;
+.collection-layout-wrapper {
+    --font-main: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --bg-page: #e2e8f0;
+    --bg-panel: #ffffff;
+    --bg-dark: #1e293b;
+    --accent-red: #e11d48;
+    --accent-red-hover: #be123c;
+    --accent-blue: #0ea5e9;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #cbd5e1;
+    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-strong: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    font-family: var(--font-main);
+    color: var(--text-main);
+    background-color: var(--bg-page);
+    min-height: 100vh;
+    padding: 6rem 60px 3rem 60px;
+    position: relative;
+    overflow-x: hidden;
+    z-index: 1;
+}
+
+    /* =========================================
+   2. LAYOUT & DECORATIONS
+========================================= */
+    .collection-layout-wrapper::before,
+    .collection-layout-wrapper::after {
+        content: '';
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        width: 45px;
+        background-color: var(--bg-dark);
+        z-index: 0;
+        box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    }
+
+    .collection-layout-wrapper::before {
+        left: 0;
+        border-right: 4px solid var(--accent-red);
+        background-image: radial-gradient(circle at 22px 50px, var(--accent-blue) 6px, #0284c7 10px, transparent 12px), radial-gradient(circle at 22px 85px, #ef4444 4px, transparent 5px), radial-gradient(circle at 22px 110px, #eab308 4px, transparent 5px), radial-gradient(circle at 22px 135px, #22c55e 4px, transparent 5px), radial-gradient(#334155 2px, transparent 2px);
+        background-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 12px 12px;
+    }
+
+    .collection-layout-wrapper::after {
+        right: 0;
+        border-left: 4px solid var(--accent-red);
+        background-image: radial-gradient(#334155 2px, transparent 2px);
+        background-size: 12px 12px;
+    }
+
+.collection-container {
     max-width: 1400px;
     margin: 0 auto;
-    width: 100%;
-    min-height: calc(100vh - 60px); /* Restando el navbar */
-}
-
-.collection-header {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-    .collection-header h1 {
-        font-size: 2.5rem;
-        font-weight: 800;
-        color: #111827;
-        margin-bottom: 0.5rem;
-    }
-
-    .collection-header p {
-        color: #6b7280;
-        font-size: 1.1rem;
-    }
-
-/* =========================================
-   2. CUADRÍCULA (GRID) DE CARTAS
-========================================= */
-.collection-grid {
-    display: grid;
-    /* Auto-fill crea columnas automáticamente dependiendo del ancho de la pantalla */
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 30px;
-    align-items: stretch;
-}
-
-/* =========================================
-   3. TARJETA INDIVIDUAL
-========================================= */
-.tcg-card-item {
-    background: #ffffff;
-    border-radius: 12px;
-    padding: 12px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 10px 15px rgba(0, 0, 0, 0.02);
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid rgba(0,0,0,0.05);
-}
-
-    .tcg-card-item:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.1), 0 15px 25px rgba(0, 0, 0, 0.05);
-    }
-
-/* =========================================
-   4. IMAGEN Y CANTIDAD
-========================================= */
-.card-image-wrapper {
     position: relative;
-    width: 100%;
-    /* Mantener proporción clásica de carta TCG (2.5 x 3.5) */
-    aspect-ratio: 2.5 / 3.5;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #1a1a1a;
-    margin-bottom: 12px;
-}
-
-    .card-image-wrapper img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
-        transition: transform 0.4s ease;
-    }
-
-.card-image-wrapper img {
-    transform: scale(1.05);
-}
-
-.quantity-badge {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: #e53e3e; /* Rojo vibrante */
-    color: white;
-    font-weight: 800;
-    font-size: 0.9rem;
-    padding: 4px 10px;
-    border-radius: 20px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    border: 2px solid white;
     z-index: 10;
 }
 
 /* =========================================
-   5. INFORMACIÓN DE LA CARTA
+   3. HEADER & CONTROLS
 ========================================= */
-.card-info {
+.collection-header-solid {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+    .collection-header-solid h1 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--text-main);
+        letter-spacing: -0.5px;
+        margin: 0 0 10px 0;
+    }
+
+.header-accent-line {
+    width: 60px;
+    height: 5px;
+    background-color: var(--accent-red);
+    margin: 0 auto;
+    border-radius: 3px;
+}
+
+.controls-panel {
+    background-color: var(--bg-panel);
+    padding: 1.25rem 2rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 2.5rem;
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.filters-group {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.custom-select-wrapper {
+    position: relative;
+    min-width: 220px;
+}
+
+.custom-filter-select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: #f8fafc;
+    border: 2px solid var(--border-color);
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border-radius: 8px;
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1.25rem;
+}
+
+    .custom-filter-select:hover {
+        border-color: #94a3b8;
+    }
+
+    .custom-filter-select:focus {
+        outline: none;
+        border-color: var(--accent-red);
+        box-shadow: 0 0 0 3px rgba(225, 29, 72, 0.15);
+        background-color: var(--bg-panel);
+    }
+
+.btn-sell-global {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--bg-panel);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    font-family: var(--font-main);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+    .btn-sell-global:hover {
+        border-color: #10b981;
+        color: #10b981;
+        background-color: #f0fdf4;
+    }
+
+.icon-svg-money {
+    width: 20px;
+    height: 20px;
+}
+
+/* =========================================
+   4. GRID & CARDS
+========================================= */
+.collection-grid-solid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 1.5rem;
+}
+
+.card-box {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem;
     display: flex;
     flex-direction: column;
-    flex-grow: 1;
+    box-shadow: var(--shadow-soft);
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.card-name {
-    font-size: 1.1rem;
-    font-weight: 700;
-    color: #1f2937;
-    margin: 0 0 10px 0;
-    text-align: center;
-    /* Si el nombre es muy largo, muestra puntos suspensivos */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
+    .card-box:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent-red);
+    }
 
-.card-tags {
+.card-image-wrapper {
+    width: 100%;
+    margin-bottom: 1rem;
+    background-color: #f1f5f9;
+    border-radius: 8px;
+    padding: 10px;
     display: flex;
     justify-content: center;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-top: auto; /* Empuja los tags al fondo si el nombre es corto */
 }
 
-/* =========================================
-   6. ETIQUETAS (BADGES)
-========================================= */
-.badge-tag {
-    font-size: 0.7rem;
+    .card-image-wrapper img {
+        width: 100%;
+        height: auto;
+        object-fit: contain;
+        border-radius: 4px;
+        filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+    }
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid #e2e8f0;
+}
+
+.footer-rarity {
+    display: flex;
+    align-items: center;
+}
+
+.rarity-mini-icon {
+    height: 20px;
+    width: auto;
+    object-fit: contain;
+}
+
+.rarity-text {
+    font-size: 0.8rem;
     font-weight: 700;
-    padding: 4px 8px;
-    border-radius: 6px;
+    color: var(--text-muted);
     text-transform: uppercase;
-    letter-spacing: 0.5px;
 }
 
-    .badge-tag.energy {
-        background: #f3f4f6;
-        color: #4b5563;
-        border: 1px solid #d1d5db;
+.footer-details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantity-text {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--text-main);
+    background-color: #f1f5f9;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+.btn-sell-icon {
+    background-color: transparent;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+    .btn-sell-icon:hover {
+        background-color: #ffe4e6;
+        color: var(--accent-red);
     }
 
-    /* Colores de rareza (Igual que en tus sobres para consistencia) */
-    .badge-tag.rarity {
-        background: #111827;
-        color: white;
-    }
-
-        .badge-tag.rarity.common {
-            border-bottom: 2px solid #9ca3af;
-        }
-
-        .badge-tag.rarity.uncommon {
-            border-bottom: 2px solid #34d399;
-        }
-
-        .badge-tag.rarity.rare {
-            border-bottom: 2px solid #60a5fa;
-        }
-
-        .badge-tag.rarity.epic,
-        .badge-tag.rarity.ultra-rare {
-            border-bottom: 2px solid #a78bfa;
-            background: #4c1d95;
-        }
+.icon-svg-sell {
+    width: 22px;
+    height: 22px;
+}
 
 /* =========================================
-   7. ESTADOS DE CARGA Y VACÍO
+   5. MODALS & OVERLAYS
 ========================================= */
-.loading-container, .empty-state {
+.modal-overlay-solid {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-content-card,
+.modal-content-sell {
+    background-color: #ffffff !important;
+    border-radius: 16px;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    border: 1px solid #cbd5e1;
+    color: #0f172a;
+}
+
+.modal-content-card {
+    padding: 2.5rem;
+    max-width: 450px;
+    width: 90%;
+}
+
+.modal-close-svg,
+.modal-close-svg-small {
+    position: absolute;
+    background: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.modal-close-svg {
+    top: -15px;
+    right: -15px;
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+    .modal-close-svg svg,
+    .modal-close-svg-small svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    .modal-close-svg:hover,
+    .modal-close-svg-small:hover {
+        background-color: #e11d48;
+        color: #ffffff;
+        border-color: #e11d48;
+    }
+
+.modal-body-card {
+    text-align: center;
+}
+
+.modal-card-img-solid {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    filter: drop-shadow(0 10px 15px rgba(0,0,0,0.25));
+}
+
+.modal-info-solid h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 1rem 0;
+    color: #0f172a;
+}
+
+.modal-tags {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.tag {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.tag-qty {
+    background-color: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    color: #334155;
+}
+
+.tag-rarity {
+    background-color: #1e293b;
+    color: #ffffff;
+}
+
+/* --- Sell Modal Specifics --- */
+.modal-content-sell {
+    max-width: 400px;
+    width: 90%;
+    overflow: hidden;
+}
+
+.modal-header-sell {
+    background-color: #f8fafc;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+    .modal-header-sell h3 {
+        margin: 0;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+.modal-close-svg-small {
+    position: relative;
+    width: 32px;
+    height: 32px;
+}
+
+.modal-body-sell {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+    .modal-body-sell p {
+        color: #475569;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .modal-body-sell strong {
+        color: #0f172a;
+    }
+
+.sell-preview-img-solid {
+    max-width: 140px;
+    border-radius: 8px;
+    margin: 0 auto 1rem auto;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+}
+
+.sell-warning {
+    color: #e11d48 !important;
+    font-weight: 600;
+    font-size: 0.9rem !important;
+}
+
+.quantity-selector-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 1.5rem auto;
+    background-color: #f8fafc;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    width: fit-content;
+}
+
+.qty-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.sell-quantity-input {
+    width: 70px;
+    padding: 8px;
+    border: 2px solid #cbd5e1;
+    border-radius: 6px;
+    text-align: center;
+    font-family: var(--font-main);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #0f172a;
+    outline: none;
+    transition: border-color 0.2s;
+    background-color: white;
+}
+
+    .sell-quantity-input:focus {
+        border-color: var(--accent-red);
+    }
+
+.max-qty-text {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #64748b;
+}
+
+.modal-footer-sell {
+    padding: 1.25rem 1.5rem;
+    background-color: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.btn-cancel-solid,
+.btn-confirm-solid {
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-family: var(--font-main);
+    font-weight: 600;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-cancel-solid {
+    background-color: #ffffff;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+}
+
+    .btn-cancel-solid:hover {
+        background-color: #f1f5f9;
+        color: #0f172a;
+    }
+
+.btn-confirm-solid {
+    background-color: #e11d48;
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 4px 6px rgba(225, 29, 72, 0.2);
+}
+
+    .btn-confirm-solid:hover {
+        background-color: #be123c;
+    }
+
+/* =========================================
+   6. STATES (LOADING & EMPTY)
+========================================= */
+.loading-state,
+.message-state {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
     padding: 4rem 0;
-    color: #6b7280;
+    color: var(--text-muted);
     font-weight: 600;
-    gap: 1rem;
+    font-size: 1.1rem;
 }
 
-.spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #e5e7eb;
-    border-left-color: #3b82f6;
+.spinner-solid {
+    width: 44px;
+    height: 44px;
+    border: 4px solid #cbd5e1;
+    border-top-color: var(--accent-red);
     border-radius: 50%;
     animation: spin 1s linear infinite;
+    margin-bottom: 1.5rem;
 }
 
 @keyframes spin {
@@ -196,21 +563,19 @@
     }
 }
 
-/* Reutilizando tu botón rojo grande para el estado vacío */
-.btn-poke-big {
-    background: #e53e3e;
-    color: white;
+.btn-action-primary {
+    background-color: var(--bg-dark);
+    color: #ffffff;
+    padding: 12px 28px;
     text-decoration: none;
-    padding: 12px 30px;
-    font-weight: bold;
-    border-radius: 50px;
-    box-shadow: 0 10px 20px rgba(229, 62, 62, 0.4);
-    transition: transform 0.2s, background 0.2s;
-    margin-top: 1rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    margin-top: 1.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
 }
 
-    .btn-poke-big:hover {
-        transform: scale(1.05);
-        background: #c53030;
-        color: white;
+    .btn-action-primary:hover {
+        background-color: #0f172a;
     }

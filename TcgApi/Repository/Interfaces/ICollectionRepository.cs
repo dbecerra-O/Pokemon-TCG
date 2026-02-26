@@ -6,6 +6,6 @@ namespace TcgApi.Repository.Interfaces
     public interface ICollectionRepository
     {
         Task<List<Collection>> GetCollections(string username); // Get all collections for a user
-        Task AddCards(string username, List<Card> newCards); // Add new cards to a user's collection
+        Task<User?> GetUserWithCollection(string username); // Add new cards to a user's collection
     }
 }

@@ -26,12 +26,14 @@ namespace TcgApi.Mappers
                 Rarity = card.Rarity == null ? null : new RarityDto
                 {
                     Id = card.Rarity?.Id ?? 0,
-                    Name = card.Rarity?.Name ?? "Unknown"
+                    Name = card.Rarity?.Name ?? "Unknown",
+                    ImageUrl = card.Rarity?.ImageUrl ?? string.Empty
                 },
                 EnergyType = new EnergyTypeDto
                 {
                     Id = card.EnergyType.Id,
-                    Name = card.EnergyType.Name
+                    Name = card.EnergyType.Name,
+                    ImageUrl = card.EnergyType.ImageUrl
                 }
             };
         }
@@ -50,7 +52,8 @@ namespace TcgApi.Mappers
             return new RarityDto
             {
                 Id = rarity.Id,
-                Name = rarity.Name
+                Name = rarity.Name,
+                ImageUrl = rarity.ImageUrl
             };
         }
         public static EnergyTypeDto ToEnergyTypeDto(this EnergyType energyType)
@@ -58,7 +61,8 @@ namespace TcgApi.Mappers
             return new EnergyTypeDto
             {
                 Id = energyType.Id,
-                Name = energyType.Name
+                Name = energyType.Name,
+                ImageUrl = energyType.ImageUrl
             };
         }
 
@@ -70,6 +74,16 @@ namespace TcgApi.Mappers
                 Name = set.Name,
                 Price = set.Price,
                 ImageUrl = set.ImageUrl
+            };
+        }
+
+        public static PackageDto ToPackageDto(this Package package)
+        {
+            return new PackageDto
+            {
+                Id = package.Id,
+                Name = package.Name,
+                ImageUrl = package.ImageUrl,
             };
         }
     }

@@ -1,6 +1,107 @@
 ﻿@page "/market"
-<h3>Market</h3>
+@using TcgWeb.Models.Dtos
+@using TcgWeb.Services
+@inject PackService PackService
+@inject NavigationManager Navigation
+@layout TcgWeb.Layout.MainLayout
+
+<PageTitle>Set Market - Pokémon TCG</PageTitle>
+
+<div class="market-layout-wrapper">
+    <div class="market-container">
+
+        <div class="market-header">
+            <h1>EXPANSION MARKET</h1>
+            <div class="header-accent-line"></div>
+            <p class="market-subtitle">Explore available sets, purchase booster packs, and find the rarest cards for your collection.</p>
+        </div>
+
+        @if (isLoading)
+        {
+            <div class="loading-state">
+                <div class="spinner-modern"></div>
+                <span>Loading expansion catalog...</span>
+            </div>
+        }
+        else if (sets == null || !sets.Any())
+        {
+            <div class="empty-state">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="empty-icon">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                </svg>
+                <p>No sets are currently available in the market.</p>
+            </div>
+        }
+        else
+        {
+            <div class="sets-grid-modern">
+                @foreach (var set in sets)
+                {
+                    <div class="set-card-modern" @onclick="() => IrASobres(set.Id, set.Name)">
+                        <div class="set-image-wrapper">
+                            <img src="@set.ImageUrl" alt="@set.Name" loading="lazy" />
+                        </div>
+
+                        <div class="set-content">
+                            <div class="set-info">
+                                <span class="set-category">Official Expansion</span>
+                                <h2>@set.Name</h2>
+                            </div>
+
+                            <div class="set-footer">
+                                @if (set.Price > 0)
+                                {
+                                    <div class="price-container">
+                                        <span class="price-label">Starting at</span>
+                                        <span class="price-value">$@set.Price</span>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="price-container">
+                                        <span class="price-value">View Catalog</span>
+                                    </div>
+                                }
+
+                                <button class="btn-open-packs">
+                                    Purchase
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="icon-arrow-small">
+                                        <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
 
 @code {
+    private List<SetDto> sets = new();
+    private bool isLoading = true;
 
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isLoading = true;
+            sets = await PackService.GetAllSets();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error al cargar el mercado: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void IrASobres(int setId, string setName)
+    {
+        string encodedName = Uri.EscapeDataString(setName);
+        Navigation.NavigateTo($"/open-packs/{setId}/{encodedName}");
+    }
 }

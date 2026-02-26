@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="TcgApi/TcgApi.csproj" />
+  <Project Path="TcgWeb/TcgWeb.csproj" />
+</Solution>
