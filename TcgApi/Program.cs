@@ -10,6 +10,10 @@ using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Read allowed origins from configuration and split into an array
+var allowedOriginsString = builder.Configuration["AllowedOrigins"] ?? "";
+var allowedOrigins = allowedOriginsString.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
 // Add services to the container
 builder.Services.AddControllers();
 // Dependency Injection
@@ -79,8 +83,20 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:TokenKey"]))// Signing key from configuration
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:TokenKey"]!))// Signing key from configuration
     };
+});
+
+// CORS configuration to allow requests from specified origins
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials()
+              .WithOrigins(allowedOrigins);
+    });
 });
 
 var app = builder.Build();
@@ -97,11 +113,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 // Enable CORS
-app.UseCors(x => x
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowCredentials()
-    .WithOrigins("https://localhost:7108")); // Allow requests
+app.UseCors();
 
 app.UseAuthentication();
 app.UseAuthorization();

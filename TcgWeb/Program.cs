@@ -6,11 +6,12 @@ using Microsoft.AspNetCore.Components.Authorization;
 using TcgWeb.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
+var apiUrl = builder.Configuration["ApiBaseUrl"] ?? string.Empty;
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { 
-    BaseAddress = new Uri("https://localhost:7291") 
+    BaseAddress = new Uri(apiUrl) 
 });
 
 builder.Services.AddScoped<TcgWeb.Services.AuthService>();
